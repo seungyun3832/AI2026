@@ -1,0 +1,780 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>성균관대학교 2024-2025 주요 공시 지표 비교 분석 보고서</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
+        body {
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif;
+            background-color: #f8fafc;
+        }
+        .skku-green { color: #074B33; }
+        .bg-skku-green { background-color: #074B33; }
+        .border-skku-green { border-color: #074B33; }
+        .skku-gold { color: #C59B27; }
+        .bg-skku-gold { background-color: #C59B27; }
+        
+        /* Tab transitions */
+        .tab-content {
+            display: none;
+            opacity: 0;
+            transition: opacity 0.3s ease-in-out;
+        }
+        .tab-content.active {
+            display: block;
+            opacity: 1;
+        }
+    </style>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#f0fdf4',
+                            100: '#dcfce7',
+                            800: '#074B33',
+                            900: '#043322',
+                            gold: '#C59B27'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="text-slate-800 antialiased min-h-screen flex flex-col">
+
+    <!-- Header Navigation -->
+    <header class="bg-brand-800 text-white shadow-lg sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-20">
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 rounded-lg bg-brand-gold flex items-center justify-center font-bold text-slate-900 text-xl shadow-md">
+                        SKKU
+                    </div>
+                    <div>
+                        <h1 class="text-xl font-bold tracking-tight text-white">성균관대학교 주요 공시 지표 분석</h1>
+                        <p class="text-xs text-emerald-200">2024년 vs 2025년 정밀 비교 및 전략적 과제 보고서</p>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-3">
+                    <a href="../index" class="inline-flex items-center px-3 py-1.5 bg-white/10 hover:bg-white/20 text-white text-xs font-medium rounded-lg transition duration-150 border border-white/20 shadow-sm">
+                        <i data-lucide="home" class="w-4 h-4 mr-1.5 text-emerald-300"></i> 홈으로
+                    </a>
+                    <div class="hidden md:flex items-center space-x-4 text-xs font-medium bg-black/20 px-3 py-1.5 rounded-full border border-white/10">
+                        <span class="inline-flex items-center"><i data-lucide="building" class="w-3.5 h-3.5 mr-1 text-emerald-400"></i> 사립 / 서울특별시</span>
+                        <span class="text-emerald-400">|</span>
+                        <span class="inline-flex items-center"><i data-lucide="check-circle" class="w-3.5 h-3.5 mr-1 text-emerald-400"></i> 분석 대상: 본교</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-1 w-full">
+        
+        <!-- Summary Alert / Overview Card -->
+        <div class="mb-8 bg-gradient-to-r from-brand-800 via-emerald-900 to-slate-900 rounded-2xl p-6 text-white shadow-xl relative overflow-hidden">
+            <div class="absolute -right-10 -bottom-10 opacity-10">
+                <i data-lucide="trending-up" class="w-64 h-64 text-white"></i>
+            </div>
+            <div class="relative z-10 max-w-3xl">
+                <span class="px-3 py-1 rounded-full bg-brand-gold text-slate-900 font-bold text-xs uppercase tracking-wider mb-3 inline-block">EXECUTIVE SUMMARY</span>
+                <h2 class="text-2xl sm:text-3xl font-extrabold tracking-tight mb-2">외연적 성장의 가속화와 교육 내실화의 조화</h2>
+                <p class="text-slate-200 text-sm sm:text-base leading-relaxed">
+                    2025년 성균관대학교는 외국인 학생 20.71% 급증 및 신입생 경쟁률 22.4:1 상승을 기록하며 <strong>글로벌 거점 대학 및 브랜딩 파워</strong>를 입증했습니다. 다만 급격한 학생 수 확대에 따라 교원 확보율, 기숙사 수용률, 취업률 관리 등 인프라 측면의 대응이 시급한 과제로 떠올랐습니다.
+                </p>
+            </div>
+        </div>
+
+        <!-- Metric KPI Highlight Cards -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-8">
+            <!-- Card 1 -->
+            <div class="bg-white rounded-xl p-5 border border-slate-200 shadow-sm hover:shadow-md transition">
+                <div class="flex items-center justify-between mb-3">
+                    <span class="text-xs font-semibold text-slate-500 uppercase">외국인 학생 수</span>
+                    <span class="p-2 rounded-lg bg-emerald-50 text-emerald-700">
+                        <i data-lucide="globe" class="w-5 h-5"></i>
+                    </span>
+                </div>
+                <div class="flex items-baseline justify-between">
+                    <div class="text-2xl font-bold text-slate-900">3,911명</div>
+                    <div class="inline-flex items-center text-xs font-semibold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded">
+                        <i data-lucide="arrow-up-right" class="w-3 h-3 mr-0.5"></i> +20.71%
+                    </div>
+                </div>
+                <p class="text-xs text-slate-500 mt-2">2024년 3,240명 대비 +671명 대폭 증가</p>
+            </div>
+
+            <!-- Card 2 -->
+            <div class="bg-white rounded-xl p-5 border border-slate-200 shadow-sm hover:shadow-md transition">
+                <div class="flex items-center justify-between mb-3">
+                    <span class="text-xs font-semibold text-slate-500 uppercase">신입생 경쟁률</span>
+                    <span class="p-2 rounded-lg bg-amber-50 text-amber-700">
+                        <i data-lucide="award" class="w-5 h-5"></i>
+                    </span>
+                </div>
+                <div class="flex items-baseline justify-between">
+                    <div class="text-2xl font-bold text-slate-900">22.4 : 1</div>
+                    <div class="inline-flex items-center text-xs font-semibold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded">
+                        <i data-lucide="arrow-up-right" class="w-3 h-3 mr-0.5"></i> +1.2p
+                    </div>
+                </div>
+                <p class="text-xs text-slate-500 mt-2">2024년 21.2:1 대비 최상위 선호도 입증</p>
+            </div>
+
+            <!-- Card 3 -->
+            <div class="bg-white rounded-xl p-5 border border-slate-200 shadow-sm hover:shadow-md transition">
+                <div class="flex items-center justify-between mb-3">
+                    <span class="text-xs font-semibold text-slate-500 uppercase">학생 1인당 교육비</span>
+                    <span class="p-2 rounded-lg bg-blue-50 text-blue-700">
+                        <i data-lucide="coins" class="w-5 h-5"></i>
+                    </span>
+                </div>
+                <div class="flex items-baseline justify-between">
+                    <div class="text-2xl font-bold text-slate-900">3,243.2만원</div>
+                    <div class="inline-flex items-center text-xs font-semibold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded">
+                        <i data-lucide="arrow-up-right" class="w-3 h-3 mr-0.5"></i> +2.81%
+                    </div>
+                </div>
+                <p class="text-xs text-slate-500 mt-2">평균 등록금 대비 약 3.6배 파격 투입</p>
+            </div>
+
+            <!-- Card 4 -->
+            <div class="bg-white rounded-xl p-5 border border-slate-200 shadow-sm hover:shadow-md transition">
+                <div class="flex items-center justify-between mb-3">
+                    <span class="text-xs font-semibold text-slate-500 uppercase">취업률</span>
+                    <span class="p-2 rounded-lg bg-rose-50 text-rose-700">
+                        <i data-lucide="briefcase" class="w-5 h-5"></i>
+                    </span>
+                </div>
+                <div class="flex items-baseline justify-between">
+                    <div class="text-2xl font-bold text-slate-900">71.3%</div>
+                    <div class="inline-flex items-center text-xs font-semibold text-rose-600 bg-rose-50 px-2 py-0.5 rounded">
+                        <i data-lucide="arrow-down-right" class="w-3 h-3 mr-0.5"></i> -2.5%p
+                    </div>
+                </div>
+                <p class="text-xs text-slate-500 mt-2">졸업생 증가(4,124→4,256명) 영향</p>
+            </div>
+        </div>
+
+        <!-- Navigation Tabs -->
+        <div class="border-b border-slate-200 mb-8">
+            <nav class="flex space-x-2 sm:space-x-8 overflow-x-auto pb-1" aria-label="Tabs">
+                <button onclick="switchTab('tab-overall')" id="btn-tab-overall" class="tab-btn border-brand-800 text-brand-800 flex items-center whitespace-nowrap py-3 px-3 border-b-2 font-medium text-sm transition">
+                    <i data-lucide="layout-dashboard" class="w-4 h-4 mr-2"></i> 종합 개요 및 대시보드
+                </button>
+                <button onclick="switchTab('tab-scale')" id="btn-tab-scale" class="tab-btn border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300 flex items-center whitespace-nowrap py-3 px-3 border-b-2 font-medium text-sm transition">
+                    <i data-lucide="users" class="w-4 h-4 mr-2"></i> 대학 규모 & 국제화
+                </button>
+                <button onclick="switchTab('tab-admission')" id="btn-tab-admission" class="tab-btn border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300 flex items-center whitespace-nowrap py-3 px-3 border-b-2 font-medium text-sm transition">
+                    <i data-lucide="graduation-cap" class="w-4 h-4 mr-2"></i> 입시 경쟁력 & 취업
+                </button>
+                <button onclick="switchTab('tab-infra')" id="btn-tab-infra" class="tab-btn border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300 flex items-center whitespace-nowrap py-3 px-3 border-b-2 font-medium text-sm transition">
+                    <i data-lucide="school" class="w-4 h-4 mr-2"></i> 교육여건 & 재정
+                </button>
+                <button onclick="switchTab('tab-strategy')" id="btn-tab-strategy" class="tab-btn border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300 flex items-center whitespace-nowrap py-3 px-3 border-b-2 font-medium text-sm transition">
+                    <i data-lucide="compass" class="w-4 h-4 mr-2"></i> 종합 평가 & 전략 제언
+                </button>
+            </nav>
+        </div>
+
+        <!-- TAB 1: OVERALL DASHBOARD -->
+        <div id="tab-overall" class="tab-content active space-y-8">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <!-- Scale & Global Bar Chart -->
+                <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+                    <div class="flex items-center justify-between mb-4">
+                        <div>
+                            <h3 class="text-base font-bold text-slate-900">대학 규모 및 국제화 지표 변화</h3>
+                            <p class="text-xs text-slate-500">2024년 vs 2025년 (단위: 명)</p>
+                        </div>
+                        <span class="text-xs bg-emerald-100 text-emerald-800 font-semibold px-2.5 py-1 rounded-full">글로벌 확장</span>
+                    </div>
+                    <div class="h-64">
+                        <canvas id="chartScaleOverall"></canvas>
+                    </div>
+                </div>
+
+                <!-- Finance & Investment Radar/Bar Chart -->
+                <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+                    <div class="flex items-center justify-between mb-4">
+                        <div>
+                            <h3 class="text-base font-bold text-slate-900">학생 1인당 교육 투자 현황</h3>
+                            <p class="text-xs text-slate-500">등록금 대비 장학금 및 교육비 투자 비중</p>
+                        </div>
+                        <span class="text-xs bg-blue-100 text-blue-800 font-semibold px-2.5 py-1 rounded-full">최상위 투자</span>
+                    </div>
+                    <div class="h-64">
+                        <canvas id="chartFinanceOverall"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Key Metric Change Overview Table -->
+            <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+                <div class="p-6 border-b border-slate-100 flex items-center justify-between">
+                    <h3 class="text-base font-bold text-slate-900">2024 - 2025 핵심 공시 지표 요약표</h3>
+                    <span class="text-xs text-slate-500">기준: 성균관대학교 본교 공시 데이터</span>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-sm text-left text-slate-600">
+                        <thead class="text-xs text-slate-700 uppercase bg-slate-50 border-b border-slate-200">
+                            <tr>
+                                <th scope="col" class="py-3.5 px-6">영역</th>
+                                <th scope="col" class="py-3.5 px-6">세부 지표</th>
+                                <th scope="col" class="py-3.5 px-6 text-center">2024년</th>
+                                <th scope="col" class="py-3.5 px-6 text-center">2025년</th>
+                                <th scope="col" class="py-3.5 px-6 text-center">증감 (증감률)</th>
+                                <th scope="col" class="py-3.5 px-6 text-center">상태 진단</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-200">
+                            <tr class="hover:bg-slate-50">
+                                <td class="py-4 px-6 font-medium text-slate-900" rowspan="3">규모 & 국제화</td>
+                                <td class="py-4 px-6">입학 정원</td>
+                                <td class="py-4 px-6 text-center">3,447명</td>
+                                <td class="py-4 px-6 text-center font-semibold text-slate-900">3,555명</td>
+                                <td class="py-4 px-6 text-center text-emerald-600 font-medium">+108명 (+3.13%)</td>
+                                <td class="py-4 px-6 text-center"><span class="px-2 py-1 bg-emerald-100 text-emerald-800 text-xs rounded-full font-medium">규모 확대</span></td>
+                            </tr>
+                            <tr class="hover:bg-slate-50">
+                                <td class="py-4 px-6">재학생 수</td>
+                                <td class="py-4 px-6 text-center">19,127명</td>
+                                <td class="py-4 px-6 text-center font-semibold text-slate-900">19,612명</td>
+                                <td class="py-4 px-6 text-center text-emerald-600 font-medium">+485명 (+2.54%)</td>
+                                <td class="py-4 px-6 text-center"><span class="px-2 py-1 bg-emerald-100 text-emerald-800 text-xs rounded-full font-medium">지속 성장</span></td>
+                            </tr>
+                            <tr class="hover:bg-slate-50">
+                                <td class="py-4 px-6">외국인 학생 수</td>
+                                <td class="py-4 px-6 text-center">3,240명</td>
+                                <td class="py-4 px-6 text-center font-semibold text-slate-900">3,911명</td>
+                                <td class="py-4 px-6 text-center text-emerald-600 font-bold">+671명 (+20.71%)</td>
+                                <td class="py-4 px-6 text-center"><span class="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-full font-bold">급성장</span></td>
+                            </tr>
+                            <tr class="hover:bg-slate-50 bg-slate-50/50">
+                                <td class="py-4 px-6 font-medium text-slate-900" rowspan="3">입시 & 취업</td>
+                                <td class="py-4 px-6">신입생 경쟁률</td>
+                                <td class="py-4 px-6 text-center">21.2 : 1</td>
+                                <td class="py-4 px-6 text-center font-semibold text-slate-900">22.4 : 1</td>
+                                <td class="py-4 px-6 text-center text-emerald-600 font-medium">+1.2p 상승</td>
+                                <td class="py-4 px-6 text-center"><span class="px-2 py-1 bg-emerald-100 text-emerald-800 text-xs rounded-full font-medium">우수</span></td>
+                            </tr>
+                            <tr class="hover:bg-slate-50 bg-slate-50/50">
+                                <td class="py-4 px-6">신입생 충원율</td>
+                                <td class="py-4 px-6 text-center">99.4%</td>
+                                <td class="py-4 px-6 text-center font-semibold text-slate-900">99.4%</td>
+                                <td class="py-4 px-6 text-center text-slate-500 font-medium">0.0%p (유지)</td>
+                                <td class="py-4 px-6 text-center"><span class="px-2 py-1 bg-slate-100 text-slate-700 text-xs rounded-full font-medium">안정적</span></td>
+                            </tr>
+                            <tr class="hover:bg-slate-50 bg-slate-50/50">
+                                <td class="py-4 px-6">취업률</td>
+                                <td class="py-4 px-6 text-center">73.8%</td>
+                                <td class="py-4 px-6 text-center font-semibold text-slate-900">71.3%</td>
+                                <td class="py-4 px-6 text-center text-rose-600 font-medium">-2.5%p 하락</td>
+                                <td class="py-4 px-6 text-center"><span class="px-2 py-1 bg-rose-100 text-rose-800 text-xs rounded-full font-medium">관리 필요</span></td>
+                            </tr>
+                            <tr class="hover:bg-slate-50">
+                                <td class="py-4 px-6 font-medium text-slate-900" rowspan="3">교육 여건</td>
+                                <td class="py-4 px-6">전임교원 1인당 학생수(정원)</td>
+                                <td class="py-4 px-6 text-center">16.58명</td>
+                                <td class="py-4 px-6 text-center font-semibold text-slate-900">17.15명</td>
+                                <td class="py-4 px-6 text-center text-rose-600 font-medium">+0.57명 (부담 증가)</td>
+                                <td class="py-4 px-6 text-center"><span class="px-2 py-1 bg-amber-100 text-amber-800 text-xs rounded-full font-medium">주의</span></td>
+                            </tr>
+                            <tr class="hover:bg-slate-50">
+                                <td class="py-4 px-6">기숙사 수용률</td>
+                                <td class="py-4 px-6 text-center">-</td>
+                                <td class="py-4 px-6 text-center font-semibold text-slate-900">20.2%</td>
+                                <td class="py-4 px-6 text-center text-rose-600 font-medium">하락세</td>
+                                <td class="py-4 px-6 text-center"><span class="px-2 py-1 bg-amber-100 text-amber-800 text-xs rounded-full font-medium">인프라 부족</span></td>
+                            </tr>
+                            <tr class="hover:bg-slate-50">
+                                <td class="py-4 px-6">전임교원 강의 담당 비율</td>
+                                <td class="py-4 px-6 text-center">55.1%</td>
+                                <td class="py-4 px-6 text-center font-semibold text-slate-900">53.8%</td>
+                                <td class="py-4 px-6 text-center text-rose-600 font-medium">-1.3%p 하락</td>
+                                <td class="py-4 px-6 text-center"><span class="px-2 py-1 bg-amber-100 text-amber-800 text-xs rounded-full font-medium">개선 권고</span></td>
+                            </tr>
+                            <tr class="hover:bg-slate-50 bg-slate-50/50">
+                                <td class="py-4 px-6 font-medium text-slate-900" rowspan="2">재정 & 투자</td>
+                                <td class="py-4 px-6">학생 1인당 장학금</td>
+                                <td class="py-4 px-6 text-center">3,377,956원</td>
+                                <td class="py-4 px-6 text-center font-semibold text-slate-900">3,576,938원</td>
+                                <td class="py-4 px-6 text-center text-emerald-600 font-medium">+5.89% 증액</td>
+                                <td class="py-4 px-6 text-center"><span class="px-2 py-1 bg-emerald-100 text-emerald-800 text-xs rounded-full font-medium">우수 투자</span></td>
+                            </tr>
+                            <tr class="hover:bg-slate-50 bg-slate-50/50">
+                                <td class="py-4 px-6">학생 1인당 교육비</td>
+                                <td class="py-4 px-6 text-center">31,546.2천원</td>
+                                <td class="py-4 px-6 text-center font-semibold text-slate-900">32,431.5천원</td>
+                                <td class="py-4 px-6 text-center text-emerald-600 font-medium">+2.81% 증액</td>
+                                <td class="py-4 px-6 text-center"><span class="px-2 py-1 bg-emerald-100 text-emerald-800 text-xs rounded-full font-medium">최상위 수준</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 2: SCALE & GLOBAL -->
+        <div id="tab-scale" class="tab-content space-y-6">
+            <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+                <h3 class="text-lg font-bold text-slate-900 mb-2">대학 규모 및 국제화 역량 상세 분석</h3>
+                <p class="text-sm text-slate-600 leading-relaxed mb-6">
+                    성균관대학교는 입학 정원 확대와 함께 재학생 규모를 지속적으로 키워가고 있으며, 특히 외국인 학생의 비중이 비약적으로 증가하며 글로벌 거점 대학으로서의 위상을 공고히 하고 있습니다.
+                </p>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                    <div class="bg-slate-50 p-5 rounded-xl border border-slate-200 text-center">
+                        <span class="text-xs font-bold text-slate-500 uppercase">입학 정원</span>
+                        <div class="text-3xl font-extrabold text-brand-800 mt-2">3,555 명</div>
+                        <div class="text-xs text-emerald-600 font-semibold mt-1">2024년 3,447명 (+3.13%)</div>
+                    </div>
+                    <div class="bg-slate-50 p-5 rounded-xl border border-slate-200 text-center">
+                        <span class="text-xs font-bold text-slate-500 uppercase">재학생 수</span>
+                        <div class="text-3xl font-extrabold text-brand-800 mt-2">19,612 명</div>
+                        <div class="text-xs text-emerald-600 font-semibold mt-1">2024년 19,127명 (+2.54%)</div>
+                    </div>
+                    <div class="bg-slate-50 p-5 rounded-xl border border-slate-200 text-center bg-emerald-50/50 border-emerald-200">
+                        <span class="text-xs font-bold text-emerald-700 uppercase">외국인 학생 수</span>
+                        <div class="text-3xl font-extrabold text-emerald-700 mt-2">3,911 명</div>
+                        <div class="text-xs text-emerald-600 font-bold mt-1">2024년 3,240명 (+20.71%)</div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
+                    <div>
+                        <canvas id="chartGlobalDetail" class="w-full h-64"></canvas>
+                    </div>
+                    <div class="bg-amber-50/80 border border-amber-200 rounded-xl p-5 space-y-3">
+                        <div class="flex items-center space-x-2 text-amber-800 font-bold text-sm">
+                            <i data-lucide="alert-triangle" class="w-5 h-5 text-amber-600"></i>
+                            <span>국제화 지표의 전략적 의미 & 시사점</span>
+                        </div>
+                        <p class="text-xs text-amber-900 leading-relaxed">
+                            외국인 학생 수가 전년 대비 <strong>20.71% 급증하며 3,900명을 넘어선 것</strong>은 대학 브랜드의 국제적 소구력이 강력하게 작용하고 있음을 입증합니다.
+                        </p>
+                        <p class="text-xs text-amber-900 leading-relaxed">
+                            다만, 이러한 급격한 외연 확장은 글로벌 학생들을 지원하기 위한 <strong>주거(기숙사), 언어 및 학습 지원, 캠퍼스 인프라에 상당한 부하</strong>를 줄 것으로 예상되어 신속한 수용 능력 확충이 요구됩니다.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 3: ADMISSION & CAREER -->
+        <div id="tab-admission" class="tab-content space-y-6">
+            <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+                <h3 class="text-lg font-bold text-slate-900 mb-2">입시 경쟁력 및 취업 성과 지표</h3>
+                <p class="text-sm text-slate-600 leading-relaxed mb-6">
+                    높은 브랜드 가치를 바탕으로 입시 경쟁력은 우상향 곡선을 그리고 있으나, 취업 성과 부문에서는 졸업생 수 증가에 따른 지표 관리가 요구됩니다.
+                </p>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+                    <!-- Admission Card -->
+                    <div class="border border-slate-200 rounded-xl p-5 bg-gradient-to-br from-white to-slate-50">
+                        <div class="flex items-center space-x-2 text-brand-800 font-bold mb-4">
+                            <i data-lucide="award" class="w-5 h-5"></i>
+                            <span>입시 경쟁력 지표</span>
+                        </div>
+                        <div class="space-y-4">
+                            <div class="flex justify-between items-center p-3 bg-white rounded-lg border border-slate-100">
+                                <div>
+                                    <div class="text-xs text-slate-500">신입생 경쟁률</div>
+                                    <div class="text-xl font-bold text-slate-900">22.4 : 1</div>
+                                </div>
+                                <div class="text-right">
+                                    <span class="text-xs text-emerald-600 font-bold">+1.2p 상승</span>
+                                    <div class="text-xs text-slate-400">2024년: 21.2 : 1</div>
+                                </div>
+                            </div>
+                            <div class="flex justify-between items-center p-3 bg-white rounded-lg border border-slate-100">
+                                <div>
+                                    <div class="text-xs text-slate-500">신입생 충원율</div>
+                                    <div class="text-xl font-bold text-slate-900">99.4%</div>
+                                </div>
+                                <div class="text-right">
+                                    <span class="text-xs text-slate-600 font-bold">안정적 유지</span>
+                                    <div class="text-xs text-slate-400">우수 입시자원 확보</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Career Card -->
+                    <div class="border border-slate-200 rounded-xl p-5 bg-gradient-to-br from-white to-slate-50">
+                        <div class="flex items-center space-x-2 text-rose-800 font-bold mb-4">
+                            <i data-lucide="trending-down" class="w-5 h-5 text-rose-600"></i>
+                            <span>취업 성과 및 환경 분석</span>
+                        </div>
+                        <div class="space-y-4">
+                            <div class="flex justify-between items-center p-3 bg-white rounded-lg border border-slate-100">
+                                <div>
+                                    <div class="text-xs text-slate-500">취업률</div>
+                                    <div class="text-xl font-bold text-slate-900">71.3%</div>
+                                </div>
+                                <div class="text-right">
+                                    <span class="text-xs text-rose-600 font-bold">-2.5%p 하락</span>
+                                    <div class="text-xs text-slate-400">2024년: 73.8%</div>
+                                </div>
+                            </div>
+                            <div class="flex justify-between items-center p-3 bg-white rounded-lg border border-slate-100">
+                                <div>
+                                    <div class="text-xs text-slate-500">졸업생 규모</div>
+                                    <div class="text-xl font-bold text-slate-900">4,256 명</div>
+                                </div>
+                                <div class="text-right">
+                                    <span class="text-xs text-slate-700 font-bold">+132명 증가</span>
+                                    <div class="text-xs text-slate-400">2024년: 4,124명</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-blue-50/60 border border-blue-200 rounded-xl p-5">
+                    <h4 class="text-sm font-bold text-blue-900 mb-2">취업 지표 하락 원인 진단</h4>
+                    <p class="text-xs text-blue-800 leading-relaxed">
+                        취업률이 73.8%에서 71.3%로 2.5%p 하락한 주요 원인은 <strong>2025년 졸업생 수가 4,256명으로 전년(4,124명) 대비 증가한 환경적 요인</strong>이 작용한 것으로 분석됩니다. 졸업생 규모 확대에 대응하여 대기업/글로벌 기업 맞춤형 경력 개발 프로그램과 산학 협력 플랫폼의 양적·질적 확충이 시급합니다.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 4: INFRA & FINANCE -->
+        <div id="tab-infra" class="tab-content space-y-6">
+            <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+                <h3 class="text-lg font-bold text-slate-900 mb-2">교육 여건, 인프라 및 재정 투자 분석</h3>
+                <p class="text-sm text-slate-600 leading-relaxed mb-6">
+                    대학 규모의 팽창과 비교하여 물리적 여건 및 교원 확보 지표는 다소 고전하고 있는 형국이나, 적극적인 장학금 및 교육비 투자를 통해 교육 질 저하를 방어하고 있습니다.
+                </p>
+
+                <!-- 2 Column Comparison -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+                    <!-- Faculty & Infra Status -->
+                    <div class="space-y-4">
+                        <h4 class="font-bold text-slate-800 text-sm flex items-center">
+                            <i data-lucide="user-check" class="w-4 h-4 mr-1.5 text-brand-800"></i> 교원 및 정주 여건 (부담 요인)
+                        </h4>
+                        <div class="p-4 bg-slate-50 rounded-xl border border-slate-200 space-y-3 text-xs">
+                            <div class="flex justify-between items-center">
+                                <span class="text-slate-600">전임교원 1인당 학생 수(정원)</span>
+                                <span class="font-bold text-rose-600">16.58명 → 17.15명 (증가)</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-slate-600">전임교원 확보율(재학생 기준)</span>
+                                <span class="font-bold text-rose-600">106.7% → 104.19% (하락)</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-slate-600">기숙사 수용률</span>
+                                <span class="font-bold text-amber-600">20.2% (하락세)</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-slate-600">전임교원 강의 담당 비율</span>
+                                <span class="font-bold text-rose-600">55.1% → 53.8% (하락)</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-slate-600">학생 1인당 도서 자료 수</span>
+                                <span class="font-bold text-emerald-600">82.3권 → 83.3권 (증가)</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Finance & Investment Status -->
+                    <div class="space-y-4">
+                        <h4 class="font-bold text-slate-800 text-sm flex items-center">
+                            <i data-lucide="dollar-sign" class="w-4 h-4 mr-1.5 text-emerald-700"></i> 재정 및 교육비 투자 (강점)
+                        </h4>
+                        <div class="p-4 bg-emerald-50/50 rounded-xl border border-emerald-200 space-y-3 text-xs">
+                            <div class="flex justify-between items-center">
+                                <span class="text-slate-600">평균 등록금</span>
+                                <span class="font-bold text-slate-800">8,449.5천원 → 8,905.2천원 (+5.39%)</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-slate-600">학생 1인당 장학금</span>
+                                <span class="font-bold text-emerald-700">337.8만원 → 357.7만원 (+5.89%)</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-slate-600">학생 1인당 교육비</span>
+                                <span class="font-bold text-emerald-700">3,154.6만원 → 3,243.2만원 (+2.81%)</span>
+                            </div>
+                            <div class="pt-2 border-t border-emerald-200 text-slate-700 leading-relaxed">
+                                <i data-lucide="check-circle-2" class="w-3.5 h-3.5 inline text-emerald-600 mr-1"></i>
+                                대학은 평균 등록금(890.5만원)의 <strong>약 3.6배에 달하는 3,243.2만원</strong>을 학생 1인당 교육비로 환원 투입하여 질적 관리에 집중하고 있습니다.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="h-64">
+                    <canvas id="chartInfraComparison"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 5: STRATEGY & ROADMAP -->
+        <div id="tab-strategy" class="tab-content space-y-6">
+            <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+                <h3 class="text-lg font-bold text-slate-900 mb-2">종합 평가 및 향후 전략적 제언</h3>
+                <p class="text-sm text-slate-600 mb-6">성균관대학교의 지속 가능한 성장을 위한 성장성 평가 및 3대 핵심 보완 과제</p>
+
+                <!-- Growth vs Challenges Grid -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                    <!-- Growth -->
+                    <div class="p-5 bg-emerald-50 rounded-xl border border-emerald-200">
+                        <div class="flex items-center space-x-2 text-emerald-900 font-bold text-base mb-3">
+                            <i data-lucide="trending-up" class="w-5 h-5 text-emerald-600"></i>
+                            <span>성장성 (Growth)</span>
+                        </div>
+                        <ul class="space-y-2.5 text-xs text-emerald-950 leading-relaxed">
+                            <li class="flex items-start">
+                                <span class="inline-block w-1.5 h-1.5 bg-emerald-500 rounded-full mt-1.5 mr-2 flex-shrink-0"></span>
+                                <span><strong>글로벌 확장성 확보:</strong> 입학 정원 확대 및 외국인 학생 20.71% 급증을 통한 브랜드 소구력 입증.</span>
+                            </li>
+                            <li class="flex items-start">
+                                <span class="inline-block w-1.5 h-1.5 bg-emerald-500 rounded-full mt-1.5 mr-2 flex-shrink-0"></span>
+                                <span><strong>독보적 입시 경쟁력:</strong> 학령인구 감소기에도 22.4:1의 높은 경쟁률 유지.</span>
+                            </li>
+                            <li class="flex items-start">
+                                <span class="inline-block w-1.5 h-1.5 bg-emerald-500 rounded-full mt-1.5 mr-2 flex-shrink-0"></span>
+                                <span><strong>과감한 교육 재정 투입:</strong> 등록금 인상률(5.39%)을 상회하는 장학금 증액(5.89%) 및 최고 수준의 교육비 환원.</span>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <!-- Challenges -->
+                    <div class="p-5 bg-rose-50 rounded-xl border border-rose-200">
+                        <div class="flex items-center space-x-2 text-rose-900 font-bold text-base mb-3">
+                            <i data-lucide="alert-circle" class="w-5 h-5 text-rose-600"></i>
+                            <span>보완 과제 (Challenges)</span>
+                        </div>
+                        <ul class="space-y-2.5 text-xs text-rose-950 leading-relaxed">
+                            <li class="flex items-start">
+                                <span class="inline-block w-1.5 h-1.5 bg-rose-500 rounded-full mt-1.5 mr-2 flex-shrink-0"></span>
+                                <span><strong>교원 확보율 하락:</strong> 학생 증가 속도를 교원 채용이 따라가지 못해 발생한 교육 부담.</span>
+                            </li>
+                            <li class="flex items-start">
+                                <span class="inline-block w-1.5 h-1.5 bg-rose-500 rounded-full mt-1.5 mr-2 flex-shrink-0"></span>
+                                <span><strong>기숙사 수용 한계:</strong> 외국인 학생 급증 대비 기숙사 수용률(20.2%) 부족에 따른 정주 리스크.</span>
+                            </li>
+                            <li class="flex items-start">
+                                <span class="inline-block w-1.5 h-1.5 bg-rose-500 rounded-full mt-1.5 mr-2 flex-shrink-0"></span>
+                                <span><strong>취업 성과 반등 필요:</strong> 졸업생 규모 확대(4,256명)에 맞춘 맞춤형 진로 지원 고도화.</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- 3 Actionable Strategic Roadmaps -->
+                <h4 class="font-bold text-slate-900 text-base mb-4">실행을 위한 3대 전략 과제 (Strategic Roadmap)</h4>
+                <div class="space-y-4">
+                    <div class="p-4 border border-slate-200 rounded-xl flex items-start space-x-4 bg-slate-50">
+                        <div class="p-3 bg-brand-800 text-white rounded-lg font-bold text-sm">01</div>
+                        <div>
+                            <h5 class="font-bold text-slate-900 text-sm">교원 추가 채용 및 전임교원 강의 담당 비율 제고</h5>
+                            <p class="text-xs text-slate-600 mt-1">
+                                전임교원 1인당 학생 수가 17.15명으로 증가하고 전임교원 강의 담당 비율이 53.8%로 감소한 상황을 개선하기 위해, 신규 우수 교원의 전략적 채용 및 교육 질 관리 체계를 신속히 도입해야 합니다.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="p-4 border border-slate-200 rounded-xl flex items-start space-x-4 bg-slate-50">
+                        <div class="p-3 bg-brand-gold text-slate-900 font-bold text-sm">02</div>
+                        <div>
+                            <h5 class="font-bold text-slate-900 text-sm">국제화 대응 정주 및 주거 인프라(기숙사) 확충</h5>
+                            <p class="text-xs text-slate-600 mt-1">
+                                외국인 학생이 3,911명(전년 대비 +20.71%)으로 폭증함에 따라 20.2% 수준에 머문 기숙사 수용률의 한계를 극복해야 합니다. 외부 제휴 주거 인프라 확장 및 전용 케어 센터 구축이 병행되어야 합니다.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="p-4 border border-slate-200 rounded-xl flex items-start space-x-4 bg-slate-50">
+                        <div class="p-3 bg-slate-800 text-white font-bold text-sm">03</div>
+                        <div>
+                            <h5 class="font-bold text-slate-900 text-sm">졸업생 규모 확대에 맞춘 맞춤형 경력 개발 플랫폼 고도화</h5>
+                            <p class="text-xs text-slate-600 mt-1">
+                                졸업생 수가 4,256명으로 확대됨에 따라 취업률이 71.3%로 하락한 것에 대응하여, 단과대학별 맞춤 취업 컨설팅, 신산업 분야 산학 연계 매칭 시스템 및 글로벌 취업 트랙을 대폭 확장해야 합니다.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-slate-900 text-slate-400 py-6 border-t border-slate-800 text-xs mt-auto">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center sm:text-left sm:flex sm:justify-between sm:items-center">
+            <div>
+                <p class="font-semibold text-slate-300">성균관대학교 2024-2025 주요 공시 지표 비교 분석 보고서</p>
+                <p class="mt-1 text-slate-500">본 대시보드는 성균관대학교 공식 지표 데이터를 기반으로 제작되었습니다.</p>
+            </div>
+            <div class="mt-4 sm:mt-0 text-slate-500">
+                Data Period: 2024 vs 2025
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript Logic & Chart Initialization -->
+    <script>
+        // Initialize Lucide Icons
+        lucide.createIcons();
+
+        // Tab Switching Logic
+        function switchTab(tabId) {
+            // Hide all tab contents
+            document.querySelectorAll('.tab-content').forEach(el => {
+                el.classList.remove('active');
+            });
+
+            // Deactivate all tab buttons
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('border-brand-800', 'text-brand-800');
+                btn.classList.add('border-transparent', 'text-slate-500');
+            });
+
+            // Show selected tab content
+            const targetTab = document.getElementById(tabId);
+            if (targetTab) {
+                targetTab.classList.add('active');
+            }
+
+            // Activate target button
+            const targetBtn = document.getElementById('btn-' + tabId);
+            if (targetBtn) {
+                targetBtn.classList.remove('border-transparent', 'text-slate-500');
+                targetBtn.classList.add('border-brand-800', 'text-brand-800');
+            }
+        }
+
+        // Initialize Charts on Dom Content Loaded
+        document.addEventListener('DOMContentLoaded', function() {
+            
+            // 1. Chart Scale Overall
+            const ctxScale = document.getElementById('chartScaleOverall').getContext('2d');
+            new Chart(ctxScale, {
+                type: 'bar',
+                data: {
+                    labels: ['입학 정원 (명)', '재학생 수 (1/10명)', '외국인 학생 수 (명)'],
+                    datasets: [
+                        {
+                            label: '2024년',
+                            data: [3447, 1912.7, 3240],
+                            backgroundColor: '#CBD5E1'
+                        },
+                        {
+                            label: '2025년',
+                            data: [3555, 1961.2, 3911],
+                            backgroundColor: '#074B33'
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'bottom' }
+                    },
+                    scales: {
+                        y: { beginAtZero: false }
+                    }
+                }
+            });
+
+            // 2. Chart Finance Overall
+            const ctxFinance = document.getElementById('chartFinanceOverall').getContext('2d');
+            new Chart(ctxFinance, {
+                type: 'line',
+                data: {
+                    labels: ['2024년', '2025년'],
+                    datasets: [
+                        {
+                            label: '학생 1인당 교육비 (천원)',
+                            data: [31546.2, 32431.5],
+                            borderColor: '#074B33',
+                            backgroundColor: '#074B33',
+                            tension: 0.2
+                        },
+                        {
+                            label: '평균 등록금 (천원)',
+                            data: [8449.5, 8905.2],
+                            borderColor: '#C59B27',
+                            backgroundColor: '#C59B27',
+                            tension: 0.2
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'bottom' }
+                    }
+                }
+            });
+
+            // 3. Chart Global Detail
+            const ctxGlobal = document.getElementById('chartGlobalDetail').getContext('2d');
+            new Chart(ctxGlobal, {
+                type: 'doughnut',
+                data: {
+                    labels: ['2024 외국인 학생 수', '2025 증가분 (+20.71%)'],
+                    datasets: [{
+                        data: [3240, 671],
+                        backgroundColor: ['#074B33', '#C59B27']
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'bottom' },
+                        title: { display: true, text: '외국인 학생 증가 분포 (2024 대비 2025)' }
+                    }
+                }
+            });
+
+            // 4. Chart Infra Comparison
+            const ctxInfra = document.getElementById('chartInfraComparison').getContext('2d');
+            new Chart(ctxInfra, {
+                type: 'bar',
+                data: {
+                    labels: ['전임교원 1인당 학생수', '전임교원 확보율(%)', '전임교원 강의담당비율(%)'],
+                    datasets: [
+                        {
+                            label: '2024년',
+                            data: [16.58, 106.7, 55.1],
+                            backgroundColor: '#94A3B8'
+                        },
+                        {
+                            label: '2025년',
+                            data: [17.15, 104.19, 53.8],
+                            backgroundColor: '#E11D48'
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'bottom' }
+                    }
+                }
+            });
+
+        });
+    </script>
+</body>
+</html>
