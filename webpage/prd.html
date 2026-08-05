@@ -1,0 +1,707 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>아이안심 지도 - 제품 요구사항 정의서 (PRD)</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- FontAwesome CDN -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <!-- Chart.js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Noto Sans KR', 'sans-serif'],
+            outfit: ['Outfit', 'sans-serif'],
+          },
+          colors: {
+            brand: {
+              50: '#eff6ff',
+              100: '#dbeafe',
+              500: '#3b82f6',
+              600: '#2563eb',
+              700: '#1d4ed8',
+              900: '#1e3a8a',
+            },
+            danger: {
+              500: '#ef4444',
+              600: '#dc2626',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    @keyframes pulse-red {
+      0%, 100% { transform: scale(1); opacity: 1; box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); }
+      50% { transform: scale(1.08); opacity: 0.9; box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); }
+    }
+    .pulse-animation {
+      animation: pulse-red 2s infinite;
+    }
+    html {
+      scroll-behavior: smooth;
+    }
+  </style>
+</head>
+<body class="bg-slate-900 text-slate-100 font-sans min-h-screen flex flex-col antialiased">
+
+  <!-- Navigation Bar -->
+  <header class="sticky top-0 z-50 bg-slate-900/90 backdrop-blur border-b border-slate-800">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+      <div class="flex items-center space-x-3">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-500 flex items-center justify-center text-white font-bold text-xl shadow-lg shadow-blue-500/20">
+          <i class="fa-solid fa-shield-halved"></i>
+        </div>
+        <div>
+          <div class="flex items-center space-x-2">
+            <span class="font-outfit font-extrabold text-lg text-white tracking-wide">아이안심 지도</span>
+            <span class="px-2 py-0.5 text-xs font-semibold bg-blue-500/20 text-blue-400 rounded-full border border-blue-500/30">v1.0 PRD</span>
+          </div>
+          <p class="text-xs text-slate-400 hidden sm:block">전국 어린이보호구역 모니터링 웹 서비스 요구사항 정의서</p>
+        </div>
+      </div>
+
+      <nav class="hidden md:flex space-x-1 text-sm font-medium">
+        <a href="#overview" class="px-3 py-2 text-slate-300 hover:text-white hover:bg-slate-800 rounded-lg transition">개요 & 가치</a>
+        <a href="#personas" class="px-3 py-2 text-slate-300 hover:text-white hover:bg-slate-800 rounded-lg transition">페르소나</a>
+        <a href="#features" class="px-3 py-2 text-slate-300 hover:text-white hover:bg-slate-800 rounded-lg transition">기능 요구사항</a>
+        <a href="#data" class="px-3 py-2 text-slate-300 hover:text-white hover:bg-slate-800 rounded-lg transition">데이터 & 통계</a>
+        <a href="#architecture" class="px-3 py-2 text-slate-300 hover:text-white hover:bg-slate-800 rounded-lg transition">아키텍처</a>
+        <a href="#roadmap" class="px-3 py-2 text-slate-300 hover:text-white hover:bg-slate-800 rounded-lg transition">로드맵</a>
+      </nav>
+
+      <div class="flex items-center space-x-2 sm:space-x-3">
+        <a href="../index.html" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 hover:text-white text-xs font-semibold rounded-lg border border-slate-700 shadow transition flex items-center gap-1.5">
+          <i class="fa-solid fa-house"></i> 홈으로
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="relative bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900 pt-12 pb-16 border-b border-slate-800">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center max-w-3xl mx-auto">
+        <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-slate-800 border border-slate-700 text-xs text-slate-300 mb-6">
+          <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+          <span>공공데이터포털 기준 14,647건 데이터 분석</span>
+        </div>
+        <h1 class="text-3xl sm:text-5xl font-extrabold text-white tracking-tight leading-tight mb-4">
+          전국 어린이보호구역<br/>
+          <span class="bg-clip-text text-transparent bg-gradient-to-r from-blue-400 via-indigo-300 to-rose-400">안전 및 CCTV 현황</span> 시각화 플랫폼
+        </h1>
+        <p class="text-slate-400 text-base sm:text-lg mb-8 leading-relaxed">
+          웹 지도 위에 CCTV 설치 여부를 마커 색상으로 표현하고,<br class="hidden sm:block"/>
+          미설치 구역(어린이집/유치원)을 필터링하는 모니터링 시스템의 제품 요구사항 정의서(PRD)입니다.
+        </p>
+
+        <!-- KPI Highlight Cards -->
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mt-8 text-left">
+          <div class="bg-slate-800/80 backdrop-blur p-4 rounded-xl border border-slate-700">
+            <div class="text-slate-400 text-xs font-medium mb-1">총 보호구역 데이터</div>
+            <div class="text-2xl font-bold text-white font-outfit">14,647 <span class="text-xs text-slate-400 font-normal">건</span></div>
+            <div class="text-[11px] text-slate-500 mt-1">공공데이터 표준데이터</div>
+          </div>
+          <div class="bg-slate-800/80 backdrop-blur p-4 rounded-xl border border-blue-500/30">
+            <div class="text-blue-400 text-xs font-medium mb-1">CCTV 설치 구역</div>
+            <div class="text-2xl font-bold text-blue-400 font-outfit">10,397 <span class="text-xs text-blue-300 font-normal">건</span></div>
+            <div class="text-[11px] text-blue-300/70 mt-1">전체의 70.9%</div>
+          </div>
+          <div class="bg-slate-800/80 backdrop-blur p-4 rounded-xl border border-red-500/30">
+            <div class="text-red-400 text-xs font-medium mb-1">CCTV 미설치 구역</div>
+            <div class="text-2xl font-bold text-red-400 font-outfit">4,250 <span class="text-xs text-red-300 font-normal">건</span></div>
+            <div class="text-[11px] text-red-300/70 mt-1">전체의 29.1%</div>
+          </div>
+          <div class="bg-slate-800/80 backdrop-blur p-4 rounded-xl border border-rose-500/50 bg-rose-950/20">
+            <div class="text-rose-400 text-xs font-medium mb-1">위험 사각지대 (미설치 시설)</div>
+            <div class="text-2xl font-bold text-rose-400 font-outfit flex items-center justify-between">
+              <span>2,869 <span class="text-xs text-rose-300 font-normal">건</span></span>
+              <span class="w-2.5 h-2.5 rounded-full bg-rose-500 inline-block pulse-animation"></span>
+            </div>
+            <div class="text-[11px] text-rose-300/70 mt-1">어린이집/유치원 미설치</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Main Content Sections -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-20 flex-grow">
+
+    <!-- 1. Product Overview & Core Values -->
+    <section id="overview" class="scroll-mt-20">
+      <div class="border-l-4 border-blue-500 pl-4 mb-6">
+        <h2 class="text-2xl font-bold text-white">1. 제품 개요 및 가치 제안</h2>
+        <p class="text-slate-400 text-sm">Product Overview & Value Proposition</p>
+      </div>
+
+      <div class="grid md:grid-cols-3 gap-6 mb-8">
+        <div class="bg-slate-800/50 rounded-xl p-5 border border-slate-700/60">
+          <div class="w-10 h-10 rounded-lg bg-blue-500/10 text-blue-400 flex items-center justify-center mb-4 text-lg">
+            <i class="fa-solid fa-file-invoice"></i>
+          </div>
+          <h3 class="text-lg font-semibold text-white mb-2">배경 및 목적</h3>
+          <p class="text-slate-300 text-sm leading-relaxed">
+            어린이보호구역 내 CCTV 미설치 구역과 시설 현황 정보를 웹 지도상에서 제공하여, 사용자가 보호구역 안전 환경을 직접 조회 및 검토할 수 있도록 지원합니다.
+          </p>
+        </div>
+
+        <div class="bg-slate-800/50 rounded-xl p-5 border border-slate-700/60">
+          <div class="w-10 h-10 rounded-lg bg-indigo-500/10 text-indigo-400 flex items-center justify-center mb-4 text-lg">
+            <i class="fa-solid fa-laptop-code"></i>
+          </div>
+          <h3 class="text-lg font-semibold text-white mb-2">제품 사양 개요</h3>
+          <ul class="text-slate-300 text-sm space-y-1.5">
+            <li>• <strong class="text-slate-100">제품명:</strong> 아이안심 지도 (v1.0)</li>
+            <li>• <strong class="text-slate-100">유형:</strong> 지도 기반 웹 애플리케이션 (SPA)</li>
+            <li>• <strong class="text-slate-100">데이터:</strong> 공공데이터포털 표준데이터</li>
+            <li>• <strong class="text-slate-100">작성일:</strong> 2026-08-04</li>
+          </ul>
+        </div>
+
+        <div class="bg-slate-800/50 rounded-xl p-5 border border-slate-700/60">
+          <div class="w-10 h-10 rounded-lg bg-emerald-500/10 text-emerald-400 flex items-center justify-center mb-4 text-lg">
+            <i class="fa-solid fa-users"></i>
+          </div>
+          <h3 class="text-lg font-semibold text-white mb-2">주요 대상 사용자</h3>
+          <ul class="text-slate-300 text-sm space-y-1.5">
+            <li>• <strong class="text-slate-100">학부모:</strong> 자녀 학교/유치원 주위 안전 시설 확인</li>
+            <li>• <strong class="text-slate-100">교육기관:</strong> 원 주변 보호구역 및 CCTV 설치 여부 체크</li>
+            <li>• <strong class="text-slate-100">지자체 담당자:</strong> 미설치 구역 확인 및 안전 관리 참고</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Core Value List Grid -->
+      <h3 class="text-md font-semibold text-slate-300 mb-4 flex items-center gap-2">
+        <i class="fa-solid fa-list-check text-blue-400"></i> 주요 기능 및 가치 항목
+      </h3>
+      <div class="grid sm:grid-cols-2 lg:grid-cols-5 gap-4">
+        <div class="p-4 rounded-lg bg-slate-800/30 border border-slate-700/50">
+          <div class="text-blue-400 font-semibold mb-1 text-sm">01. 상태 시각화</div>
+          <p class="text-slate-300 text-xs">CCTV 설치 여부를 파랑(설치)/빨강(미설치) 색상으로 구분 표기</p>
+        </div>
+        <div class="p-4 rounded-lg bg-slate-800/30 border border-slate-700/50">
+          <div class="text-rose-400 font-semibold mb-1 text-sm">02. 미설치 필터</div>
+          <p class="text-slate-300 text-xs">CCTV가 설치되지 않은 어린이집/유치원 구역 전용 토글 제공</p>
+        </div>
+        <div class="p-4 rounded-lg bg-slate-800/30 border border-slate-700/50">
+          <div class="text-indigo-400 font-semibold mb-1 text-sm">03. 복합 검색·필터</div>
+          <p class="text-slate-300 text-xs">지역(시도/시군구), 시설종류, CCTV 조건 조합 검색</p>
+        </div>
+        <div class="p-4 rounded-lg bg-slate-800/30 border border-slate-700/50">
+          <div class="text-emerald-400 font-semibold mb-1 text-sm">04. 상세 정보 표출</div>
+          <p class="text-slate-300 text-xs">도로폭, 관할경찰서, 관리기관, CCTV 수량 데이터 카드 제공</p>
+        </div>
+        <div class="p-4 rounded-lg bg-slate-800/30 border border-slate-700/50">
+          <div class="text-amber-400 font-semibold mb-1 text-sm">05. 외부 지도 연동</div>
+          <p class="text-slate-300 text-xs">카카오맵 및 네이버지도 길찾기 웹 페이지 링크 연동</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2. User Personas -->
+    <section id="personas" class="scroll-mt-20">
+      <div class="border-l-4 border-indigo-500 pl-4 mb-6">
+        <h2 class="text-2xl font-bold text-white">2. 사용자 페르소나</h2>
+        <p class="text-slate-400 text-sm">User Personas & Scenarios</p>
+      </div>
+
+      <div class="grid md:grid-cols-2 gap-6">
+        <!-- Persona A -->
+        <div class="bg-gradient-to-br from-slate-800 to-slate-800/60 rounded-xl p-6 border border-slate-700 relative overflow-hidden">
+          <div class="flex items-center space-x-4 mb-4">
+            <div class="w-12 h-12 rounded-full bg-blue-500/20 text-blue-400 flex items-center justify-center text-xl font-bold">
+              <i class="fa-solid fa-user-nurse"></i>
+            </div>
+            <div>
+              <h3 class="text-lg font-bold text-white">페르소나 A: 학부모 김지영 (35세)</h3>
+              <p class="text-xs text-blue-400">초등학교 입학 자녀 보유</p>
+            </div>
+          </div>
+          <div class="space-y-3 text-sm">
+            <div class="bg-slate-900/50 p-3 rounded-lg border border-slate-700/40">
+              <span class="text-slate-400 font-medium block text-xs mb-1"><i class="fa-solid fa-circle-info text-blue-400"></i> 상황 및 니즈</span>
+              <p class="text-slate-200">초등학교 주변 통학로의 CCTV 설치 여부 및 주행 도로 환경을 미리 확인하고자 함.</p>
+            </div>
+            <div class="bg-slate-900/50 p-3 rounded-lg border border-slate-700/40">
+              <span class="text-slate-400 font-medium block text-xs mb-1"><i class="fa-solid fa-route text-emerald-400"></i> 이용 시나리오</span>
+              <p class="text-slate-200">검색창 시설명 입력 → 해당 위치로 지도 이동 → 팝업 정보창에서 CCTV 수량 및 도로폭 확인</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Persona B -->
+        <div class="bg-gradient-to-br from-slate-800 to-slate-800/60 rounded-xl p-6 border border-slate-700 relative overflow-hidden">
+          <div class="flex items-center space-x-4 mb-4">
+            <div class="w-12 h-12 rounded-full bg-rose-500/20 text-rose-400 flex items-center justify-center text-xl font-bold">
+              <i class="fa-solid fa-user-shield"></i>
+            </div>
+            <div>
+              <h3 class="text-lg font-bold text-white">페르소나 B: 지자체 담당자 박민수 (42세)</h3>
+              <p class="text-xs text-rose-400">지자체 안전 관리 담당</p>
+            </div>
+          </div>
+          <div class="space-y-3 text-sm">
+            <div class="bg-slate-900/50 p-3 rounded-lg border border-slate-700/40">
+              <span class="text-slate-400 font-medium block text-xs mb-1"><i class="fa-solid fa-circle-info text-rose-400"></i> 상황 및 니즈</span>
+              <p class="text-slate-200">관할 지역 내 CCTV가 설치되지 않은 어린이보호구역 리스트를 확인하고 관리 현황 자료로 활용하고자 함.</p>
+            </div>
+            <div class="bg-slate-900/50 p-3 rounded-lg border border-slate-700/40">
+              <span class="text-slate-400 font-medium block text-xs mb-1"><i class="fa-solid fa-route text-emerald-400"></i> 이용 시나리오</span>
+              <p class="text-slate-200">시/도 및 시/군/구 필터 설정 → "위험 사각지대만 보기" 토글 활성화 → 조회된 리스트에서 관리기관 확인</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. Functional Requirements & UI Interactive Mockup -->
+    <section id="features" class="scroll-mt-20">
+      <div class="border-l-4 border-emerald-500 pl-4 mb-6">
+        <h2 class="text-2xl font-bold text-white">3. 기능 요구사항 및 UI 구성</h2>
+        <p class="text-slate-400 text-sm">Functional Requirements & UI Layout</p>
+      </div>
+
+      <!-- UI Interactive Simulation Box -->
+      <div id="quick-demo" class="bg-slate-800 rounded-2xl border border-slate-700 overflow-hidden shadow-2xl mb-10">
+        <div class="bg-slate-900 px-4 py-3 border-b border-slate-700 flex items-center justify-between">
+          <div class="flex items-center space-x-2">
+            <span class="w-3 h-3 rounded-full bg-red-500"></span>
+            <span class="w-3 h-3 rounded-full bg-yellow-500"></span>
+            <span class="w-3 h-3 rounded-full bg-green-500"></span>
+            <span class="ml-2 text-xs font-mono text-slate-400">서비스 레이아웃 목업 (UI Layout Mockup)</span>
+          </div>
+          <span class="text-xs text-blue-400 bg-blue-900/50 px-2 py-0.5 rounded border border-blue-700">PRD 7.1 예시</span>
+        </div>
+
+        <div class="grid lg:grid-cols-12 min-h-[480px]">
+          <!-- Sidebar Mockup -->
+          <div class="lg:col-span-4 bg-slate-900/80 p-4 border-r border-slate-700/80 space-y-4 flex flex-col justify-between">
+            <div class="space-y-3">
+              <!-- Search Bar -->
+              <div>
+                <label class="text-xs text-slate-400 block mb-1">통합 검색 (FR-15)</label>
+                <div class="relative">
+                  <input type="text" value="성남초등학교" readonly class="w-full bg-slate-800 border border-slate-600 text-xs rounded-lg pl-8 pr-3 py-2 text-white">
+                  <i class="fa-solid fa-magnifying-glass absolute left-2.5 top-2.5 text-slate-400 text-xs"></i>
+                </div>
+              </div>
+
+              <!-- Region Filter -->
+              <div class="grid grid-cols-2 gap-2">
+                <div>
+                  <label class="text-xs text-slate-400 block mb-1">시/도 (FR-14)</label>
+                  <select class="w-full bg-slate-800 border border-slate-600 text-xs rounded-lg px-2 py-1.5 text-white">
+                    <option>경기도</option>
+                  </select>
+                </div>
+                <div>
+                  <label class="text-xs text-slate-400 block mb-1">시/군/구</label>
+                  <select class="w-full bg-slate-800 border border-slate-600 text-xs rounded-lg px-2 py-1.5 text-white">
+                    <option>성남시 수정구</option>
+                  </select>
+                </div>
+              </div>
+
+              <!-- Blindspot Toggle -->
+              <div class="p-2.5 bg-rose-950/30 border border-rose-500/40 rounded-lg flex items-center justify-between">
+                <div>
+                  <div class="text-xs font-semibold text-rose-300">위험 사각지대만 보기 (FR-13)</div>
+                  <div class="text-[10px] text-slate-400">CCTV 미설치 어린이집/유치원</div>
+                </div>
+                <div class="w-9 h-5 bg-rose-600 rounded-full p-0.5 cursor-pointer flex items-center justify-end">
+                  <div class="w-4 h-4 bg-white rounded-full shadow"></div>
+                </div>
+              </div>
+
+              <!-- Facility Multi-Select -->
+              <div>
+                <label class="text-xs text-slate-400 block mb-1">시설종류 (FR-11)</label>
+                <div class="flex flex-wrap gap-1">
+                  <span class="px-2 py-1 bg-blue-600 text-white text-[11px] rounded flex items-center gap-1"><i class="fa-solid fa-school text-[10px]"></i> 초등학교</span>
+                  <span class="px-2 py-1 bg-blue-600 text-white text-[11px] rounded flex items-center gap-1"><i class="fa-solid fa-baby text-[10px]"></i> 어린이집</span>
+                  <span class="px-2 py-1 bg-slate-700 text-slate-300 text-[11px] rounded"><i class="fa-solid fa-icons text-[10px]"></i> 유치원</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Item List Preview -->
+            <div class="border-t border-slate-700/60 pt-3">
+              <div class="text-xs text-slate-400 mb-2 flex justify-between">
+                <span>결과 목록 (FR-17)</span>
+                <span class="text-blue-400">총 12건</span>
+              </div>
+              <div class="bg-slate-800 p-2.5 rounded-lg border border-blue-500/50 space-y-1">
+                <div class="flex items-center justify-between">
+                  <span class="text-xs font-bold text-white">성남초등학교</span>
+                  <span class="text-[10px] px-1.5 py-0.5 bg-blue-500/20 text-blue-300 rounded">CCTV 5대</span>
+                </div>
+                <p class="text-[11px] text-slate-400 truncate">경기도 성남시 수정구 시민로 123</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Map View Area Mockup -->
+          <div class="lg:col-span-8 bg-slate-950 relative p-4 flex flex-col justify-between min-h-[360px] overflow-hidden">
+            <!-- Simulated Map Grid Background -->
+            <div class="absolute inset-0 opacity-20 bg-[radial-gradient(#3b82f6_1px,transparent_1px)] [background-size:16px_16px]"></div>
+
+            <!-- Map Floating Controls -->
+            <div class="relative z-10 flex justify-between items-start">
+              <div class="bg-slate-900/90 backdrop-blur px-3 py-1.5 rounded-lg border border-slate-700 text-xs text-slate-300 shadow">
+                <i class="fa-solid fa-location-dot text-blue-400 mr-1"></i> 위치 (위도 36.35, 경도 127.8) - Zoom 7
+              </div>
+              <div class="flex flex-col space-y-1">
+                <button class="w-8 h-8 bg-slate-800 text-slate-200 rounded border border-slate-700 flex items-center justify-center text-xs"><i class="fa-solid fa-crosshairs"></i></button>
+                <button class="w-8 h-8 bg-slate-800 text-slate-200 rounded border border-slate-700 flex items-center justify-center text-xs"><i class="fa-solid fa-globe"></i></button>
+              </div>
+            </div>
+
+            <!-- Simulated Map Markers & Popup Card -->
+            <div class="relative z-10 my-auto flex justify-center items-center">
+              <!-- Popup Overlay (FR-09, FR-10) -->
+              <div class="w-80 bg-slate-800 rounded-xl border border-slate-600 shadow-2xl p-4 text-left relative transform -translate-y-2">
+                <div class="flex items-start justify-between border-b border-slate-700 pb-2 mb-2">
+                  <div>
+                    <span class="inline-block px-2 py-0.5 bg-blue-500/20 text-blue-400 text-[10px] font-semibold rounded mb-1">
+                      <i class="fa-solid fa-school"></i> 초등학교
+                    </span>
+                    <h4 class="font-bold text-white text-base">성남초등학교</h4>
+                  </div>
+                  <span class="px-2 py-0.5 bg-emerald-500/20 text-emerald-400 text-xs font-medium rounded-full">CCTV 설치</span>
+                </div>
+                <div class="space-y-1.5 text-xs text-slate-300">
+                  <div><strong class="text-slate-400">주소:</strong> 경기도 성남시 수정구 시민로 123</div>
+                  <div><strong class="text-slate-400">CCTV 현황:</strong> 설치 완료 (<span class="text-blue-400 font-bold">5대</span>)</div>
+                  <div><strong class="text-slate-400">보호구역 도로폭:</strong> 8m ~ 12m</div>
+                  <div><strong class="text-slate-400">관할 경찰서:</strong> 성남수정경찰서</div>
+                </div>
+                <div class="grid grid-cols-2 gap-2 mt-3 pt-2 border-t border-slate-700">
+                  <a href="#" class="py-1 px-2 bg-yellow-500/20 text-yellow-300 hover:bg-yellow-500/30 text-[11px] rounded text-center font-medium border border-yellow-500/30">
+                    <i class="fa-solid fa-map-pin"></i> 카카오맵
+                  </a>
+                  <a href="#" class="py-1 px-2 bg-green-500/20 text-green-300 hover:bg-green-500/30 text-[11px] rounded text-center font-medium border border-green-500/30">
+                    <i class="fa-solid fa-location-arrow"></i> 네이버지도
+                  </a>
+                </div>
+              </div>
+            </div>
+
+            <!-- Legend Overlay (FR-21) -->
+            <div class="relative z-10 bg-slate-900/90 backdrop-blur p-2.5 rounded-lg border border-slate-700 text-xs flex items-center space-x-4 w-fit">
+              <div class="flex items-center space-x-1.5">
+                <span class="w-3 h-3 rounded-full bg-blue-500 inline-block"></span>
+                <span class="text-slate-300 text-[11px]">CCTV 설치 (파랑)</span>
+              </div>
+              <div class="flex items-center space-x-1.5">
+                <span class="w-3 h-3 rounded-full bg-red-500 inline-block"></span>
+                <span class="text-slate-300 text-[11px]">CCTV 미설치 (빨강)</span>
+              </div>
+              <div class="flex items-center space-x-1.5">
+                <span class="w-3 h-3 rounded-full bg-rose-600 inline-block pulse-animation"></span>
+                <span class="text-slate-300 text-[11px]">미설치 어린이집/유치원</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Functional Requirements Specification Table -->
+      <div class="overflow-x-auto bg-slate-800/60 rounded-xl border border-slate-700">
+        <table class="w-full text-left text-sm text-slate-300">
+          <thead class="bg-slate-900/80 text-xs uppercase text-slate-400 border-b border-slate-700">
+            <tr>
+              <th class="p-3.5">ID</th>
+              <th class="p-3.5">요구사항 내용</th>
+              <th class="p-3.5">우선순위</th>
+              <th class="p-3.5">상태</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-700/60 text-xs">
+            <tr>
+              <td class="p-3 font-mono text-blue-400">FR-01~04</td>
+              <td class="p-3">전국 위/경도 마커 생성, 결측치 처리, Leaflet MarkerCluster 적용, 초기 지도 뷰 설정</td>
+              <td class="p-3"><span class="px-2 py-0.5 bg-red-500/20 text-red-400 rounded">P0/P1</span></td>
+              <td class="p-3 text-emerald-400 font-bold">✓ 완료</td>
+            </tr>
+            <tr>
+              <td class="p-3 font-mono text-blue-400">FR-05~08</td>
+              <td class="p-3">CCTV 유무별 파랑/빨강 마커 분류, 미설치 시설 펄스 애니메이션, 시설별 FontAwesome 아이콘 지정</td>
+              <td class="p-3"><span class="px-2 py-0.5 bg-red-500/20 text-red-400 rounded">P0/P1</span></td>
+              <td class="p-3 text-emerald-400 font-bold">✓ 완료</td>
+            </tr>
+            <tr>
+              <td class="p-3 font-mono text-blue-400">FR-09~10</td>
+              <td class="p-3">마커 클릭 시 카드 팝업 (시설명, 주소, CCTV대수, 도로폭, 관리기관 등) & 외부 지도 길찾기 연동</td>
+              <td class="p-3"><span class="px-2 py-0.5 bg-red-500/20 text-red-400 rounded">P0/P1</span></td>
+              <td class="p-3 text-emerald-400 font-bold">✓ 완료</td>
+            </tr>
+            <tr>
+              <td class="p-3 font-mono text-blue-400">FR-11~17</td>
+              <td class="p-3">사이드바 시설 멀티셀렉트, CCTV 세그먼트, 위험사각지대 토글, 계단식 지역 드롭다운, 통합 검색 기능</td>
+              <td class="p-3"><span class="px-2 py-0.5 bg-red-500/20 text-red-400 rounded">P0/P1</span></td>
+              <td class="p-3 text-emerald-400 font-bold">✓ 완료</td>
+            </tr>
+            <tr>
+              <td class="p-3 font-mono text-blue-400">FR-18~21</td>
+              <td class="p-3">통계 현황판, Geolocation 내 위치 이동, 지도 초기화, 범례 표기</td>
+              <td class="p-3"><span class="px-2 py-0.5 bg-blue-500/20 text-blue-400 rounded">P1/P2</span></td>
+              <td class="p-3 text-emerald-400 font-bold">✓ 완료</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- 4. Data Model & Charts -->
+    <section id="data" class="scroll-mt-20">
+      <div class="border-l-4 border-amber-500 pl-4 mb-6">
+        <h2 class="text-2xl font-bold text-white">4. 데이터 모델 및 분포 통계</h2>
+        <p class="text-slate-400 text-sm">Data Schema & Facility Type Distribution</p>
+      </div>
+
+      <div class="grid lg:grid-cols-12 gap-6">
+        <!-- Schema JSON View -->
+        <div class="lg:col-span-6 bg-slate-800/80 p-5 rounded-xl border border-slate-700 flex flex-col justify-between">
+          <div>
+            <h3 class="text-base font-bold text-white mb-2 flex items-center gap-2">
+              <i class="fa-solid fa-code text-amber-400"></i> 변환 JSON 데이터 구조 (`data/zones.json`)
+            </h3>
+            <p class="text-xs text-slate-400 mb-4">EUC-KR 원본 CSV(14,647건)를 웹 서비스용 JSON 스키마로 파싱하여 구성</p>
+            <pre class="bg-slate-950 p-4 rounded-lg font-mono text-xs text-blue-300 overflow-x-auto border border-slate-800 leading-relaxed">
+{
+  <span class="text-slate-400">"id"</span>: 1,
+  <span class="text-slate-400">"facilityType"</span>: <span class="text-emerald-300">"어린이집"</span>,
+  <span class="text-slate-400">"facilityName"</span>: <span class="text-emerald-300">"리틀킹어린이집"</span>,
+  <span class="text-slate-400">"addressRoad"</span>: <span class="text-emerald-300">"경기도 이천시 증신로269번길 31"</span>,
+  <span class="text-slate-400">"sido"</span>: <span class="text-emerald-300">"경기도"</span>,
+  <span class="text-slate-400">"sigungu"</span>: <span class="text-emerald-300">"이천시"</span>,
+  <span class="text-slate-400">"lat"</span>: 37.29372041,
+  <span class="text-slate-400">"lng"</span>: 127.4408233,
+  <span class="text-slate-400">"cctvYn"</span>: <span class="text-emerald-300">"Y"</span>,
+  <span class="text-slate-400">"cctvCount"</span>: 1,
+  <span class="text-slate-400">"isSafe"</span>: true,
+  <span class="text-slate-400">"isBlindspot"</span>: false,
+  <span class="text-slate-400">"roadWidth"</span>: <span class="text-emerald-300">"정보 없음"</span>
+}</pre>
+          </div>
+        </div>
+
+        <!-- Facility Type Distribution Chart -->
+        <div class="lg:col-span-6 bg-slate-800/80 p-5 rounded-xl border border-slate-700 flex flex-col justify-between">
+          <div>
+            <h3 class="text-base font-bold text-white mb-2 flex items-center gap-2">
+              <i class="fa-solid fa-chart-pie text-indigo-400"></i> 시설종류별 데이터 비율
+            </h3>
+            <p class="text-xs text-slate-400 mb-4">전국 14,647개 어린이보호구역 중 시설 분포</p>
+            <div class="h-56 relative">
+              <canvas id="facilityChart"></canvas>
+            </div>
+          </div>
+          <div class="grid grid-cols-3 gap-2 text-center text-xs mt-4 pt-3 border-t border-slate-700">
+            <div>
+              <span class="text-slate-400 block">초등학교</span>
+              <span class="font-bold text-white">7,066건 (48.2%)</span>
+            </div>
+            <div>
+              <span class="text-slate-400 block">유치원</span>
+              <span class="font-bold text-white">4,234건 (28.9%)</span>
+            </div>
+            <div>
+              <span class="text-slate-400 block">어린이집</span>
+              <span class="font-bold text-white">3,054건 (20.9%)</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 5. System Architecture -->
+    <section id="architecture" class="scroll-mt-20">
+      <div class="border-l-4 border-cyan-500 pl-4 mb-6">
+        <h2 class="text-2xl font-bold text-white">5. 시스템 아키텍처 및 기술 스택</h2>
+        <p class="text-slate-400 text-sm">System Architecture & Tech Stack</p>
+      </div>
+
+      <!-- Tech Stack Badges -->
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-8">
+        <div class="bg-slate-800/60 p-3 rounded-lg border border-slate-700">
+          <span class="text-xs text-slate-400 block">Frontend Stack</span>
+          <span class="text-sm font-bold text-blue-400">HTML5, CSS3, ES6+ JS</span>
+        </div>
+        <div class="bg-slate-800/60 p-3 rounded-lg border border-slate-700">
+          <span class="text-xs text-slate-400 block">Map Engine</span>
+          <span class="text-sm font-bold text-emerald-400">Leaflet v1.9.4</span>
+        </div>
+        <div class="bg-slate-800/60 p-3 rounded-lg border border-slate-700">
+          <span class="text-xs text-slate-400 block">Clustering Plugin</span>
+          <span class="text-sm font-bold text-indigo-400">MarkerCluster 1.5.3</span>
+        </div>
+        <div class="bg-slate-800/60 p-3 rounded-lg border border-slate-700">
+          <span class="text-xs text-slate-400 block">Server & Data</span>
+          <span class="text-sm font-bold text-amber-400">Node.js Static / JSON</span>
+        </div>
+      </div>
+
+      <!-- Visual Pipeline Flow Diagram -->
+      <div class="bg-slate-800/50 p-6 rounded-xl border border-slate-700">
+        <h3 class="text-sm font-bold text-slate-300 mb-4">데이터 파이프라인 및 클라이언트 처리 흐름</h3>
+        
+        <div class="grid md:grid-cols-3 gap-4 text-center relative">
+          <!-- Step 1 -->
+          <div class="bg-slate-900 p-4 rounded-lg border border-slate-700">
+            <div class="w-8 h-8 rounded-full bg-slate-800 text-blue-400 flex items-center justify-center mx-auto mb-2 font-bold text-sm">1</div>
+            <h4 class="font-bold text-white text-sm">Data Pipeline</h4>
+            <p class="text-xs text-slate-400 mt-1">EUC-KR CSV (2.7MB)</p>
+            <div class="my-2 text-slate-500 text-xs"><i class="fa-solid fa-arrow-down"></i> build-data.js</div>
+            <p class="text-xs text-emerald-400 font-mono">data/zones.json (6MB UTF-8)</p>
+          </div>
+
+          <!-- Step 2 -->
+          <div class="bg-slate-900 p-4 rounded-lg border border-slate-700">
+            <div class="w-8 h-8 rounded-full bg-slate-800 text-blue-400 flex items-center justify-center mx-auto mb-2 font-bold text-sm">2</div>
+            <h4 class="font-bold text-white text-sm">Web Server</h4>
+            <p class="text-xs text-slate-400 mt-1">Node.js serve.js (HTTP)</p>
+            <div class="my-2 text-slate-500 text-xs"><i class="fa-solid fa-arrow-down"></i> Static File Serving</div>
+            <p class="text-xs text-indigo-400 font-mono">index.html / app.js / styles.css</p>
+          </div>
+
+          <!-- Step 3 -->
+          <div class="bg-slate-900 p-4 rounded-lg border border-slate-700">
+            <div class="w-8 h-8 rounded-full bg-slate-800 text-blue-400 flex items-center justify-center mx-auto mb-2 font-bold text-sm">3</div>
+            <h4 class="font-bold text-white text-sm">Client Browser</h4>
+            <p class="text-xs text-slate-400 mt-1">Leaflet.js & MarkerCluster</p>
+            <div class="my-2 text-slate-500 text-xs"><i class="fa-solid fa-arrow-down"></i> Filter & Search Engine</div>
+            <p class="text-xs text-amber-400 font-mono">지도 시각화 및 검색 처리</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 6. Execution & Roadmap -->
+    <section id="roadmap" class="scroll-mt-20">
+      <div class="border-l-4 border-rose-500 pl-4 mb-6">
+        <h2 class="text-2xl font-bold text-white">6. 실행 방법 및 향후 계획</h2>
+        <p class="text-slate-400 text-sm">Execution Instructions & Future Expansion Roadmap</p>
+      </div>
+
+      <div class="grid md:grid-cols-2 gap-6">
+        <!-- How to Run -->
+        <div class="bg-slate-800/60 p-5 rounded-xl border border-slate-700">
+          <h3 class="text-base font-bold text-white mb-3 flex items-center gap-2">
+            <i class="fa-solid fa-terminal text-emerald-400"></i> 실행 방법 (How to Run)
+          </h3>
+          <div class="space-y-4">
+            <div>
+              <div class="text-xs text-slate-400 mb-1">Step 1: 데이터 변환 스크립트 실행 (최초 1회)</div>
+              <div class="bg-slate-950 p-2.5 rounded border border-slate-800 font-mono text-xs text-emerald-400">
+                $ node build-data.js
+              </div>
+            </div>
+            <div>
+              <div class="text-xs text-slate-400 mb-1">Step 2: 웹 서버 실행</div>
+              <div class="bg-slate-950 p-2.5 rounded border border-slate-800 font-mono text-xs text-emerald-400">
+                $ node serve.js
+              </div>
+            </div>
+            <p class="text-xs text-slate-400">
+              <i class="fa-solid fa-circle-check text-blue-400"></i> 실행 후 브라우저에서 <code class="text-blue-300">http://localhost:3000</code> 접속
+            </p>
+          </div>
+        </div>
+
+        <!-- Roadmap Timeline -->
+        <div class="bg-slate-800/60 p-5 rounded-xl border border-slate-700">
+          <h3 class="text-base font-bold text-white mb-3 flex items-center gap-2">
+            <i class="fa-solid fa-rocket text-rose-400"></i> 향후 확장 계획 (Roadmap)
+          </h3>
+          <div class="space-y-3 text-xs">
+            <div class="flex items-start space-x-3">
+              <span class="px-2 py-0.5 bg-blue-500/20 text-blue-400 rounded font-mono font-bold">v1.1</span>
+              <div>
+                <strong class="text-white">히트맵 레이어:</strong> CCTV 미설치 밀집 지역 visual heatmap 제공
+              </div>
+            </div>
+            <div class="flex items-start space-x-3">
+              <span class="px-2 py-0.5 bg-blue-500/20 text-blue-400 rounded font-mono font-bold">v1.2</span>
+              <div>
+                <strong class="text-white">사용자 제보 기능:</strong> 위험 요소 제보 및 정보 공유
+              </div>
+            </div>
+            <div class="flex items-start space-x-3">
+              <span class="px-2 py-0.5 bg-indigo-500/20 text-indigo-400 rounded font-mono font-bold">v1.3</span>
+              <div>
+                <strong class="text-white">통학로 안전 경로:</strong> 통학 경로 주변 보호구역 데이터 연동
+              </div>
+            </div>
+            <div class="flex items-start space-x-3">
+              <span class="px-2 py-0.5 bg-purple-500/20 text-purple-400 rounded font-mono font-bold">v2.0</span>
+              <div>
+                <strong class="text-white">실시간 API 연동:</strong> 공공데이터 API 수신 및 PWA 오프라인 지원
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="bg-slate-950 border-t border-slate-800 py-8 text-center text-xs text-slate-500">
+    <div class="max-w-7xl mx-auto px-4">
+      <p class="mb-2">아이안심 지도 (v1.0 PRD Specification Document)</p>
+      <p>Data Source: 공공데이터포털 전국어린이보호구역표준데이터 (2026-07-15 기준)</p>
+    </div>
+  </footer>
+
+  <!-- Chart Init Script -->
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      const ctx = document.getElementById('facilityChart').getContext('2d');
+      new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+          labels: ['초등학교', '유치원', '어린이집', '특수학교', '기타'],
+          datasets: [{
+            data: [7066, 4234, 3054, 179, 114],
+            backgroundColor: [
+              '#3b82f6', // blue
+              '#6366f1', // indigo
+              '#ec4899', // pink
+              '#10b981', // emerald
+              '#64748b'  // slate
+            ],
+            borderWidth: 0
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              position: 'right',
+              labels: {
+                color: '#94a3b8',
+                font: { size: 11, family: 'Noto Sans KR' }
+              }
+            }
+          }
+        }
+      });
+    });
+  </script>
+</body>
+</html>
