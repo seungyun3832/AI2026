@@ -1,0 +1,759 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>비디오 플레이어 - 개발자의 추억</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        cyber: {
+                            50: '#f0f7ff',
+                            100: '#e0effe',
+                            500: '#00b4d8',
+                            600: '#0077b6',
+                            900: '#03045e',
+                            dark: '#0a0f1d',
+                            card: '#12192c'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Pretendard', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0a0f1d;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #1e293b;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #334155;
+        }
+        
+        /* Neon Glow Effect */
+        .neon-glow {
+            box-shadow: 0 0 15px rgba(0, 180, 216, 0.4);
+        }
+        
+        /* Video Container Hover Controls */
+        .video-container:hover .video-controls {
+            opacity: 1;
+        }
+
+        /* Range Input Styling */
+        input[type="range"] {
+            accent-color: #00b4d8;
+        }
+    </style>
+</head>
+<body class="bg-cyber-dark text-slate-100 font-sans min-h-screen flex flex-col selection:bg-cyan-500 selection:text-white">
+
+    <!-- Top Header Navigation -->
+    <header class="sticky top-0 z-50 bg-cyber-dark/80 backdrop-blur-md border-b border-slate-800 px-4 lg:px-8 py-3.5 flex items-center justify-between">
+        <!-- Logo & Title -->
+        <div class="flex items-center space-x-3 cursor-pointer" onclick="resetPlayer()">
+            <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-cyan-500 to-blue-600 flex items-center justify-center shadow-lg shadow-cyan-500/20">
+                <i class="fa-solid fa-play text-white text-lg ml-0.5"></i>
+            </div>
+            <div>
+                <h1 class="font-bold text-lg tracking-tight bg-gradient-to-r from-white via-slate-200 to-cyan-400 bg-clip-text text-transparent">
+                    Cyber Player
+                </h1>
+                <p class="text-xs text-slate-400 font-medium">Memories & Code</p>
+            </div>
+        </div>
+
+        <!-- Search Bar (Desktop) -->
+        <div class="hidden md:flex items-center flex-1 max-w-md mx-8">
+            <div class="relative w-full">
+                <input type="text" placeholder="영상 검색..." 
+                    class="w-full bg-slate-900/90 border border-slate-700/60 rounded-full py-2 pl-10 pr-4 text-sm focus:outline-none focus:border-cyan-500 transition-colors text-slate-200 placeholder-slate-500">
+                <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
+            </div>
+        </div>
+
+        <!-- Top Right Actions including "Home Button" -->
+        <div class="flex items-center space-x-3">
+            <button onclick="triggerFileSelect()" class="hidden sm:flex items-center space-x-2 bg-slate-800/80 hover:bg-slate-700 text-slate-200 text-xs font-semibold px-3.5 py-2 rounded-xl transition-all border border-slate-700/50">
+                <i class="fa-solid fa-upload text-cyan-400"></i>
+                <span>영상 교체</span>
+            </button>
+            
+            <!-- Home Button (홈으로 버튼) -->
+            <a href="#" onclick="goHome(event)" class="flex items-center space-x-2 bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white text-xs font-semibold px-4 py-2 rounded-xl transition-all duration-300 shadow-md shadow-cyan-500/20 hover:shadow-cyan-500/40">
+                <i class="fa-solid fa-house"></i>
+                <span>홈으로</span>
+            </a>
+        </div>
+    </header>
+
+    <!-- Main Content Grid -->
+    <main class="flex-1 max-w-7xl w-full mx-auto p-4 md:p-6 lg:p-8 grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+        <!-- Left Column: Video Player & Info (Spans 2 columns on lg screens) -->
+        <div class="lg:col-span-2 space-y-5">
+            
+            <!-- Video Player Card Container -->
+            <div id="dropZone" class="video-container relative rounded-2xl overflow-hidden bg-black aspect-[9/16] max-h-[75vh] mx-auto sm:aspect-video shadow-2xl border border-slate-800/80 group">
+                
+                <!-- Main HTML5 Video Element -->
+                <video id="mainVideo" class="w-full h-full object-contain bg-black" src="mv.mp4" playsinline loop autoplay muted>
+                    <source id="videoSource" src="mv.mp4" type="video/mp4">
+                    브라우저가 비디오 태그를 지원하지 않습니다.
+                </video>
+
+                <!-- Canvas Animation Fallback / Overlay (Used when no local video file is uploaded yet) -->
+                <canvas id="simulatedCanvas" class="absolute inset-0 w-full h-full hidden"></canvas>
+
+                <!-- Drag & Drop / File Select Overlay (Hidden by default as mv.mp4 is loaded directly) -->
+                <div id="uploadPrompt" class="absolute inset-0 flex flex-col items-center justify-center bg-slate-950/90 p-6 text-center z-20 backdrop-blur-sm transition-opacity duration-300 hidden pointer-events-none">
+                    <div class="w-20 h-20 rounded-full bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center mb-4 text-cyan-400 text-3xl animate-pulse">
+                        <i class="fa-solid fa-file-video"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-slate-100 mb-2">동영상을 재생해 보세요</h3>
+                    <p class="text-slate-400 text-xs sm:text-sm max-w-md mb-6 leading-relaxed">
+                        소장 중이신 영상 파일(MP4, WebM 등)을 드래그하여 여기에 놓거나 아래 버튼으로 파일을 선택해주세요.
+                    </p>
+                    <div class="flex flex-wrap justify-center gap-3">
+                        <button onclick="triggerFileSelect()" class="px-5 py-2.5 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold text-sm transition-all shadow-lg shadow-cyan-500/30 flex items-center space-x-2">
+                            <i class="fa-solid fa-folder-open"></i>
+                            <span>다른 비디오 선택</span>
+                        </button>
+                    </div>
+                    <input type="file" id="fileInput" accept="video/*" class="hidden" onchange="handleFileSelect(event)">
+                </div>
+
+                <!-- Custom Player Overlay Controls -->
+                <div id="videoControls" class="video-controls absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/95 via-black/60 to-transparent p-4 transition-opacity duration-300 opacity-0 group-hover:opacity-100 flex flex-col justify-end space-y-2 z-10">
+                    
+                    <!-- Progress / Seek Bar -->
+                    <div class="flex items-center space-x-3 w-full">
+                        <span id="currentTime" class="text-xs font-mono text-slate-300">00:00</span>
+                        <input type="range" id="seekBar" value="0" min="0" max="100" class="w-full h-1.5 bg-slate-700 rounded-lg appearance-none cursor-pointer">
+                        <span id="duration" class="text-xs font-mono text-slate-400">00:00</span>
+                    </div>
+
+                    <!-- Control Buttons Row -->
+                    <div class="flex items-center justify-between pt-1">
+                        <div class="flex items-center space-x-3 sm:space-x-4">
+                            <!-- Play / Pause -->
+                            <button id="playBtn" onclick="togglePlay()" class="text-slate-100 hover:text-cyan-400 transition-colors w-8 h-8 flex items-center justify-center">
+                                <i class="fa-solid fa-play text-lg"></i>
+                            </button>
+
+                            <!-- Rewind 10s -->
+                            <button onclick="skip(-10)" class="text-slate-300 hover:text-white transition-colors text-xs hidden sm:block" title="10초 뒤로">
+                                <i class="fa-solid fa-rotate-left"></i>
+                            </button>
+
+                            <!-- Fast Forward 10s -->
+                            <button onclick="skip(10)" class="text-slate-300 hover:text-white transition-colors text-xs hidden sm:block" title="10초 앞으로">
+                                <i class="fa-solid fa-rotate-right"></i>
+                            </button>
+
+                            <!-- Volume Control -->
+                            <div class="flex items-center space-x-2 group/vol">
+                                <button id="muteBtn" onclick="toggleMute()" class="text-slate-300 hover:text-white transition-colors">
+                                    <i class="fa-solid fa-volume-high"></i>
+                                </button>
+                                <input type="range" id="volumeBar" value="100" min="0" max="100" class="w-16 h-1 bg-slate-700 rounded-lg appearance-none cursor-pointer hidden sm:block">
+                            </div>
+                        </div>
+
+                        <!-- Right Control Group -->
+                        <div class="flex items-center space-x-3">
+                            <!-- Playback Speed -->
+                            <select id="speedSelect" onchange="changeSpeed(this.value)" class="bg-slate-900/80 border border-slate-700/60 text-xs text-slate-300 rounded px-2 py-1 focus:outline-none focus:border-cyan-500 cursor-pointer">
+                                <option value="0.5">0.5x</option>
+                                <option value="1.0" selected>1.0x</option>
+                                <option value="1.25">1.25x</option>
+                                <option value="1.5">1.5x</option>
+                                <option value="2.0">2.0x</option>
+                            </select>
+
+                            <!-- Picture in Picture -->
+                            <button onclick="togglePip()" class="text-slate-300 hover:text-white transition-colors text-sm" title="PIP 모드">
+                                <i class="fa-solid fa-clone"></i>
+                            </button>
+
+                            <!-- Fullscreen -->
+                            <button onclick="toggleFullscreen()" class="text-slate-300 hover:text-white transition-colors text-sm" title="전체화면">
+                                <i class="fa-solid fa-expand"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Video Info Section -->
+            <div class="bg-cyber-card border border-slate-800/80 rounded-2xl p-5 shadow-lg space-y-4">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-800">
+                    <div>
+                        <div class="flex items-center space-x-2 mb-1">
+                            <span class="px-2.5 py-0.5 rounded-full bg-cyan-500/10 text-cyan-400 text-xs font-semibold border border-cyan-500/20">애니메이션</span>
+                            <span class="px-2.5 py-0.5 rounded-full bg-blue-500/10 text-blue-400 text-xs font-semibold border border-blue-500/20">개발자의 삶</span>
+                        </div>
+                        <h2 class="text-xl font-bold text-white tracking-tight">코딩하는 개발자와 시절의 추억 (Cyber Memory)</h2>
+                        <p class="text-xs text-slate-400 mt-1">조회수 12.4만회 • 2026. 8. 5.</p>
+                    </div>
+
+                    <!-- Action Buttons (Like, Share, Download) -->
+                    <div class="flex items-center space-x-2">
+                        <button onclick="toggleLike(this)" class="flex items-center space-x-2 bg-slate-800 hover:bg-slate-700/80 text-slate-200 px-3.5 py-2 rounded-xl text-xs font-semibold transition-all border border-slate-700/50">
+                            <i class="fa-regular fa-thumbs-up text-cyan-400"></i>
+                            <span id="likeCount">1.4천</span>
+                        </button>
+                        <button onclick="shareLink()" class="flex items-center space-x-2 bg-slate-800 hover:bg-slate-700/80 text-slate-200 px-3.5 py-2 rounded-xl text-xs font-semibold transition-all border border-slate-700/50">
+                            <i class="fa-solid fa-share"></i>
+                            <span>공유</span>
+                        </button>
+                        <button onclick="triggerFileSelect()" class="flex items-center space-x-2 bg-slate-800 hover:bg-slate-700/80 text-slate-200 px-3.5 py-2 rounded-xl text-xs font-semibold transition-all border border-slate-700/50">
+                            <i class="fa-solid fa-folder"></i>
+                            <span>파일열기</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Author Profile & Description -->
+                <div class="flex items-start space-x-4 pt-1">
+                    <div class="w-12 h-12 rounded-full bg-gradient-to-tr from-cyan-400 to-indigo-600 flex items-center justify-center font-bold text-lg text-white shrink-0 shadow-md">
+                        Dev
+                    </div>
+                    <div class="flex-1 space-y-2">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <h4 class="font-bold text-sm text-slate-200 flex items-center gap-1.5">
+                                    DevStudio
+                                    <i class="fa-solid fa-circle-check text-cyan-400 text-xs"></i>
+                                </h4>
+                                <p class="text-xs text-slate-400">구독자 4.2만명</p>
+                            </div>
+                            <button onclick="toggleSubscribe(this)" class="bg-cyan-500 hover:bg-cyan-400 text-slate-950 px-4 py-2 rounded-xl text-xs font-bold transition-all shadow-md shadow-cyan-500/20">
+                                구독
+                            </button>
+                        </div>
+                        <p class="text-xs sm:text-sm text-slate-300 leading-relaxed pt-2">
+                            어두운 방 안에서 사이버 홀로그램 화면을 바라보며 열정적으로 코딩에 집중하는 개발자의 모습, 그리고 과거 학창 시절 복도를 달리던 풋풋한 기억으로 이어지는 스토리를 담은 감성 애니메이션입니다.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Comments Preview Section -->
+            <div class="bg-cyber-card border border-slate-800/80 rounded-2xl p-5 shadow-lg space-y-4">
+                <h3 class="font-bold text-sm text-slate-200 flex items-center space-x-2">
+                    <i class="fa-solid fa-comments text-cyan-400"></i>
+                    <span>댓글 48개</span>
+                </h3>
+
+                <!-- Add Comment Input -->
+                <div class="flex space-x-3 items-center">
+                    <div class="w-8 h-8 rounded-full bg-slate-700 flex items-center justify-center text-xs text-slate-300 font-bold shrink-0">
+                        Me
+                    </div>
+                    <input type="text" id="commentInput" placeholder="댓글 추가..." 
+                        class="flex-1 bg-slate-900 border border-slate-800 rounded-xl px-4 py-2 text-xs text-slate-200 focus:outline-none focus:border-cyan-500 transition-colors"
+                        onkeypress="if(event.key === 'Enter') addComment()">
+                    <button onclick="addComment()" class="bg-slate-800 hover:bg-slate-700 text-cyan-400 text-xs font-semibold px-3.5 py-2 rounded-xl border border-slate-700 transition-all">
+                        등록
+                    </button>
+                </div>
+
+                <!-- Comment List -->
+                <div id="commentList" class="space-y-3 pt-2">
+                    <div class="flex space-x-3 text-xs">
+                        <div class="w-8 h-8 rounded-full bg-blue-900/60 border border-blue-500/30 flex items-center justify-center text-blue-300 font-bold shrink-0">
+                            JS
+                        </div>
+                        <div>
+                            <div class="flex items-center space-x-2">
+                                <span class="font-bold text-slate-300">CodeMaster</span>
+                                <span class="text-[10px] text-slate-500">2시간 전</span>
+                            </div>
+                            <p class="text-slate-400 mt-1">푸른 빛 홀로그램 이펙트 연출이 정말 멋지네요! 학창시절로 넘어가는 연출도 최고입니다.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Right Column: Playlist & Information Panel -->
+        <div class="space-y-4">
+            
+            <div class="bg-cyber-card border border-slate-800/80 rounded-2xl p-4 shadow-lg">
+                <h3 class="font-bold text-sm text-slate-200 mb-3 flex items-center space-x-2">
+                    <i class="fa-solid fa-layer-group text-cyan-400"></i>
+                    <span>관련 비디오 리스트</span>
+                </h3>
+                
+                <!-- Video Item Card 1 (Current Active) -->
+                <div class="flex gap-3 p-2 rounded-xl bg-cyan-500/10 border border-cyan-500/30 transition-all cursor-pointer">
+                    <div class="w-28 h-16 rounded-lg bg-slate-900 relative overflow-hidden shrink-0 border border-cyan-500/40">
+                        <div class="absolute inset-0 bg-gradient-to-br from-cyan-900/40 to-slate-950 flex items-center justify-center">
+                            <i class="fa-solid fa-play text-cyan-400 text-sm"></i>
+                        </div>
+                        <span class="absolute bottom-1 right-1 bg-black/80 text-[10px] text-cyan-300 px-1 rounded font-mono">재생중</span>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <h4 class="text-xs font-bold text-cyan-300 truncate">개발자의 사이버 룸 & 추억</h4>
+                        <p class="text-[11px] text-slate-400 mt-1">DevStudio</p>
+                        <p class="text-[10px] text-slate-500">0:07</p>
+                    </div>
+                </div>
+
+                <!-- Video Item Card 2 -->
+                <div onclick="triggerFileSelect()" class="flex gap-3 p-2 rounded-xl hover:bg-slate-800/60 transition-all cursor-pointer group mt-2">
+                    <div class="w-28 h-16 rounded-lg bg-slate-900 relative overflow-hidden shrink-0 border border-slate-800 group-hover:border-slate-700">
+                        <div class="absolute inset-0 bg-gradient-to-tr from-purple-900/30 to-slate-900 flex items-center justify-center">
+                            <i class="fa-solid fa-plus text-slate-400 group-hover:text-cyan-400 transition-colors"></i>
+                        </div>
+                        <span class="absolute bottom-1 right-1 bg-black/80 text-[10px] text-slate-400 px-1 rounded font-mono">Local</span>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <h4 class="text-xs font-semibold text-slate-300 group-hover:text-cyan-400 transition-colors truncate">내 영상 파일 추가하기</h4>
+                        <p class="text-[11px] text-slate-400 mt-1">클릭하여 파일 선택</p>
+                        <p class="text-[10px] text-slate-500">MP4 / WEBM</p>
+                    </div>
+                </div>
+
+                <!-- Video Item Card 3 -->
+                <div onclick="startDemoPreview()" class="flex gap-3 p-2 rounded-xl hover:bg-slate-800/60 transition-all cursor-pointer group mt-2">
+                    <div class="w-28 h-16 rounded-lg bg-slate-900 relative overflow-hidden shrink-0 border border-slate-800 group-hover:border-slate-700">
+                        <div class="absolute inset-0 bg-gradient-to-tr from-cyan-900/20 to-blue-900/20 flex items-center justify-center">
+                            <i class="fa-solid fa-laptop-code text-cyan-400"></i>
+                        </div>
+                        <span class="absolute bottom-1 right-1 bg-black/80 text-[10px] text-slate-400 px-1 rounded font-mono">Canvas</span>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <h4 class="text-xs font-semibold text-slate-300 group-hover:text-cyan-400 transition-colors truncate">시뮬레이션 그래픽 비디오</h4>
+                        <p class="text-[11px] text-slate-400 mt-1">인터랙티브 이펙트</p>
+                        <p class="text-[10px] text-slate-500">Demo</p>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Shortcut Key Info Box -->
+            <div class="bg-cyber-card border border-slate-800/80 rounded-2xl p-4 shadow-lg space-y-3">
+                <h3 class="font-bold text-xs text-slate-300 flex items-center space-x-2">
+                    <i class="fa-solid fa-keyboard text-cyan-400"></i>
+                    <span>키보드 단축키 안내</span>
+                </h3>
+                <div class="grid grid-cols-2 gap-2 text-[11px] text-slate-400">
+                    <div class="flex items-center justify-between bg-slate-900/60 p-2 rounded-lg border border-slate-800">
+                        <span>재생 / 일시정지</span>
+                        <kbd class="bg-slate-800 text-cyan-400 px-1.5 py-0.5 rounded text-[10px] border border-slate-700">Space</kbd>
+                    </div>
+                    <div class="flex items-center justify-between bg-slate-900/60 p-2 rounded-lg border border-slate-800">
+                        <span>전체화면</span>
+                        <kbd class="bg-slate-800 text-cyan-400 px-1.5 py-0.5 rounded text-[10px] border border-slate-700">F</kbd>
+                    </div>
+                    <div class="flex items-center justify-between bg-slate-900/60 p-2 rounded-lg border border-slate-800">
+                        <span>음소거</span>
+                        <kbd class="bg-slate-800 text-cyan-400 px-1.5 py-0.5 rounded text-[10px] border border-slate-700">M</kbd>
+                    </div>
+                    <div class="flex items-center justify-between bg-slate-900/60 p-2 rounded-lg border border-slate-800">
+                        <span>10초 이동</span>
+                        <kbd class="bg-slate-800 text-cyan-400 px-1.5 py-0.5 rounded text-[10px] border border-slate-700">← / →</kbd>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Toast Notification Message Box -->
+    <div id="toast" class="fixed bottom-6 right-6 bg-cyan-500 text-slate-950 px-4 py-2.5 rounded-xl font-bold text-xs shadow-xl opacity-0 translate-y-4 transition-all duration-300 pointer-events-none flex items-center space-x-2 z-50">
+        <i class="fa-solid fa-circle-info"></i>
+        <span id="toastMsg">메시지</span>
+    </div>
+
+    <script>
+        const mainVideo = document.getElementById('mainVideo');
+        const playBtn = document.getElementById('playBtn');
+        const seekBar = document.getElementById('seekBar');
+        const currentTimeEl = document.getElementById('currentTime');
+        const durationEl = document.getElementById('duration');
+        const muteBtn = document.getElementById('muteBtn');
+        const volumeBar = document.getElementById('volumeBar');
+        const uploadPrompt = document.getElementById('uploadPrompt');
+        const simulatedCanvas = document.getElementById('simulatedCanvas');
+        const fileInput = document.getElementById('fileInput');
+        const dropZone = document.getElementById('dropZone');
+
+        let isCanvasDemo = false;
+        let canvasAnimId = null;
+
+        // Auto-play default mv.mp4 on window load
+        window.addEventListener('load', () => {
+            mainVideo.src = 'mv.mp4';
+            mainVideo.load();
+            mainVideo.play().then(() => {
+                updatePlayBtnUI(true);
+                showToast('mv.mp4 영상을 재생합니다.');
+            }).catch(err => {
+                console.log('Autoplay prevented or waiting for user interaction:', err);
+                updatePlayBtnUI(false);
+            });
+        });
+
+        // Toast Message Notification
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            const toastMsg = document.getElementById('toastMsg');
+            toastMsg.innerText = msg;
+            toast.classList.remove('opacity-0', 'translate-y-4');
+            toast.classList.add('opacity-100', 'translate-y-0');
+            setTimeout(() => {
+                toast.classList.remove('opacity-100', 'translate-y-0');
+                toast.classList.add('opacity-0', 'translate-y-4');
+            }, 3000);
+        }
+
+        // Home Button Click Handler
+        function goHome(e) {
+            e.preventDefault();
+            showToast('메인 페이지 홈으로 이동합니다.');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            if (mainVideo.src) {
+                mainVideo.currentTime = 0;
+                mainVideo.play();
+                updatePlayBtnUI(true);
+            }
+        }
+
+        // Trigger File Select
+        function triggerFileSelect() {
+            fileInput.click();
+        }
+
+        // Handle File Select (Uploaded MP4 / WebM file)
+        function handleFileSelect(e) {
+            const file = e.target.files[0];
+            if (file) {
+                loadVideoFile(file);
+            }
+        }
+
+        function loadVideoFile(file) {
+            if (canvasAnimId) cancelAnimationFrame(canvasAnimId);
+            simulatedCanvas.classList.add('hidden');
+            
+            const fileURL = URL.createObjectURL(file);
+            mainVideo.src = fileURL;
+            mainVideo.load();
+            uploadPrompt.classList.add('opacity-0', 'pointer-events-none');
+            isCanvasDemo = false;
+
+            mainVideo.play().then(() => {
+                updatePlayBtnUI(true);
+                showToast(`'${file.name}' 동영상을 재생합니다.`);
+            }).catch(err => {
+                console.log('Autoplay prevented:', err);
+                updatePlayBtnUI(false);
+            });
+        }
+
+        // Drag & Drop Listeners
+        dropZone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            dropZone.classList.add('border-cyan-500', 'neon-glow');
+        });
+        dropZone.addEventListener('dragleave', () => {
+            dropZone.classList.remove('border-cyan-500', 'neon-glow');
+        });
+        dropZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropZone.classList.remove('border-cyan-500', 'neon-glow');
+            if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+                const file = e.dataTransfer.files[0];
+                if (file.type.startsWith('video/')) {
+                    loadVideoFile(file);
+                } else {
+                    showToast('비디오 파일만 업로드할 수 있습니다.');
+                }
+            }
+        });
+
+        // Toggle Play / Pause
+        function togglePlay() {
+            if (isCanvasDemo) {
+                showToast('데모 애니메이션 재생 중');
+                return;
+            }
+
+            if (!mainVideo.src || uploadPrompt.classList.contains('opacity-100')) {
+                triggerFileSelect();
+                return;
+            }
+
+            if (mainVideo.paused) {
+                mainVideo.play();
+                updatePlayBtnUI(true);
+            } else {
+                mainVideo.pause();
+                updatePlayBtnUI(false);
+            }
+        }
+
+        function updatePlayBtnUI(isPlaying) {
+            playBtn.innerHTML = isPlaying 
+                ? '<i class="fa-solid fa-pause text-lg"></i>' 
+                : '<i class="fa-solid fa-play text-lg"></i>';
+        }
+
+        // Video Time & Seek Control
+        mainVideo.addEventListener('timeupdate', () => {
+            if (isNaN(mainVideo.duration)) return;
+            const pct = (mainVideo.currentTime / mainVideo.duration) * 100;
+            seekBar.value = pct;
+            currentTimeEl.innerText = formatTime(mainVideo.currentTime);
+            durationEl.innerText = formatTime(mainVideo.duration);
+        });
+
+        seekBar.addEventListener('input', () => {
+            if (isNaN(mainVideo.duration)) return;
+            const targetTime = (seekBar.value / 100) * mainVideo.duration;
+            mainVideo.currentTime = targetTime;
+        });
+
+        function skip(sec) {
+            if (mainVideo.src) {
+                mainVideo.currentTime += sec;
+                showToast(sec > 0 ? '+10초 이동' : '-10초 이동');
+            }
+        }
+
+        // Volume & Mute Controls
+        function toggleMute() {
+            mainVideo.muted = !mainVideo.muted;
+            updateMuteUI();
+        }
+
+        function updateMuteUI() {
+            if (mainVideo.muted || mainVideo.volume === 0) {
+                muteBtn.innerHTML = '<i class="fa-solid fa-volume-xmark"></i>';
+                volumeBar.value = 0;
+            } else {
+                muteBtn.innerHTML = '<i class="fa-solid fa-volume-high"></i>';
+                volumeBar.value = mainVideo.volume * 100;
+            }
+        }
+
+        volumeBar.addEventListener('input', () => {
+            mainVideo.volume = volumeBar.value / 100;
+            mainVideo.muted = (mainVideo.volume === 0);
+            updateMuteUI();
+        });
+
+        function changeSpeed(val) {
+            mainVideo.playbackRate = parseFloat(val);
+            showToast(`재생 속도: ${val}x`);
+        }
+
+        function togglePip() {
+            if (document.pictureInPictureElement) {
+                document.exitPictureInPicture();
+            } else if (mainVideo.requestPictureInPicture) {
+                mainVideo.requestPictureInPicture();
+            }
+        }
+
+        function toggleFullscreen() {
+            if (!document.fullscreenElement) {
+                dropZone.requestFullscreen().catch(err => console.log(err));
+            } else {
+                document.exitFullscreen();
+            }
+        }
+
+        function formatTime(sec) {
+            const m = Math.floor(sec / 60);
+            const s = Math.floor(sec % 60);
+            return `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+        }
+
+        // Key Shortcuts
+        document.addEventListener('keydown', (e) => {
+            if (e.target.tagName === 'INPUT') return; // ignore if typing in input
+            if (e.code === 'Space') {
+                e.preventDefault();
+                togglePlay();
+            } else if (e.code === 'KeyF') {
+                toggleFullscreen();
+            } else if (e.code === 'KeyM') {
+                toggleMute();
+            } else if (e.code === 'ArrowRight') {
+                skip(10);
+            } else if (e.code === 'ArrowLeft') {
+                skip(-10);
+            }
+        });
+
+        function startDemoPreview() {
+            uploadPrompt.classList.add('opacity-0', 'pointer-events-none');
+            simulatedCanvas.classList.remove('hidden');
+            isCanvasDemo = true;
+            
+            const ctx = simulatedCanvas.getContext('2d');
+            let angle = 0;
+            let time = 0;
+
+            function resizeCanvas() {
+                simulatedCanvas.width = dropZone.clientWidth;
+                simulatedCanvas.height = dropZone.clientHeight;
+            }
+            resizeCanvas();
+            window.addEventListener('resize', resizeCanvas);
+
+            function render() {
+                if (!isCanvasDemo) return;
+                time += 0.03;
+                angle += 0.02;
+
+                const w = simulatedCanvas.width;
+                const h = simulatedCanvas.height;
+                const cx = w / 2;
+                const cy = h / 2;
+
+                // Dark Tech Background
+                ctx.fillStyle = '#0a0f1d';
+                ctx.fillRect(0, 0, w, h);
+
+                // Grid background effect
+                ctx.strokeStyle = 'rgba(0, 180, 216, 0.08)';
+                ctx.lineWidth = 1;
+                const gridSize = 40;
+                for (let x = 0; x < w; x += gridSize) {
+                    ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, h); ctx.stroke();
+                }
+                for (let y = 0; y < h; y += gridSize) {
+                    ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(w, y); ctx.stroke();
+                }
+
+                // Holographic Glowing Circles (Matching video visual)
+                for (let i = 1; i <= 3; i++) {
+                    ctx.save();
+                    ctx.translate(cx, cy);
+                    ctx.rotate(angle * (i % 2 === 0 ? 1 : -1) * 0.5);
+                    ctx.beginPath();
+                    ctx.arc(0, 0, 60 * i + Math.sin(time) * 10, 0, Math.PI * 2);
+                    ctx.strokeStyle = `rgba(0, 180, 216, ${0.7 - i * 0.15})`;
+                    ctx.lineWidth = 3 - i * 0.5;
+                    ctx.setLineDash([15, 10, 5, 10]);
+                    ctx.shadowColor = '#00b4d8';
+                    ctx.shadowBlur = 15;
+                    ctx.stroke();
+                    ctx.restore();
+                }
+
+                // Central Code Developer Silhouette & Hologram Text
+                ctx.fillStyle = '#00b4d8';
+                ctx.font = 'bold 16px monospace';
+                ctx.textAlign = 'center';
+                ctx.shadowColor = '#00b4d8';
+                ctx.shadowBlur = 10;
+                ctx.fillText('< DEVELOPER_MEMORIES_MODE />', cx, cy - 20);
+
+                ctx.fillStyle = '#94a3b8';
+                ctx.font = '12px Pretendard';
+                ctx.fillText('영상을 선택하거나 비디오 드래그앤드롭이 가능합니다.', cx, cy + 20);
+
+                canvasAnimId = requestAnimationFrame(render);
+            }
+            render();
+            showToast('데모 시뮬레이션 애니메이션이 실행되었습니다.');
+        }
+
+        // Like / Subscribe Interaction Handlers
+        function toggleLike(btn) {
+            const countEl = document.getElementById('likeCount');
+            if (btn.classList.contains('text-cyan-400')) {
+                btn.classList.remove('text-cyan-400', 'border-cyan-500');
+                countEl.innerText = '1.4천';
+                showToast('좋아요를 취소했습니다.');
+            } else {
+                btn.classList.add('text-cyan-400', 'border-cyan-500');
+                countEl.innerText = '1.4천+1';
+                showToast('좋아요를 누르셨습니다!');
+            }
+        }
+
+        function toggleSubscribe(btn) {
+            if (btn.innerText === '구독') {
+                btn.innerText = '구독중';
+                btn.classList.remove('bg-cyan-500', 'hover:bg-cyan-400', 'text-slate-950');
+                btn.classList.add('bg-slate-800', 'text-slate-300', 'border', 'border-slate-700');
+                showToast('채널을 구독했습니다.');
+            } else {
+                btn.innerText = '구독';
+                btn.classList.remove('bg-slate-800', 'text-slate-300', 'border', 'border-slate-700');
+                btn.classList.add('bg-cyan-500', 'hover:bg-cyan-400', 'text-slate-950');
+                showToast('구독을 취소했습니다.');
+            }
+        }
+
+        function shareLink() {
+            navigator.clipboard.writeText(window.location.href);
+            showToast('페이지 링크가 클립보드에 복사되었습니다!');
+        }
+
+        function addComment() {
+            const input = document.getElementById('commentInput');
+            const text = input.value.trim();
+            if (!text) return;
+
+            const list = document.getElementById('commentList');
+            const newComment = document.createElement('div');
+            newComment.className = 'flex space-x-3 text-xs animate-fade-in';
+            newComment.innerHTML = `
+                <div class="w-8 h-8 rounded-full bg-cyan-500/20 border border-cyan-500/40 flex items-center justify-center text-cyan-300 font-bold shrink-0">
+                    YOU
+                </div>
+                <div>
+                    <div class="flex items-center space-x-2">
+                        <span class="font-bold text-slate-200">사용자</span>
+                        <span class="text-[10px] text-slate-500">방금 전</span>
+                    </div>
+                    <p class="text-slate-300 mt-1">${escapeHtml(text)}</p>
+                </div>
+            `;
+            list.prepend(newComment);
+            input.value = '';
+            showToast('댓글이 등록되었습니다.');
+        }
+
+        function escapeHtml(str) {
+            return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+        }
+
+        function resetPlayer() {
+            if (mainVideo.src) {
+                mainVideo.currentTime = 0;
+                mainVideo.play();
+            }
+        }
+    </script>
+</body>
+</html>
