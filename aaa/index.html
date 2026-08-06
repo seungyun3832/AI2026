@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>인공지능 일반 수강 소감 및 최종 성찰</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Noto Sans KR', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#eef2ff',
+                            100: '#e0e7ff',
+                            500: '#6366f1',
+                            600: '#4f46e5',
+                            700: '#4338ca',
+                            900: '#312e81',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @media print {
+            .no-print {
+                display: none !important;
+            }
+            .print-only {
+                display: block !important;
+            }
+            body {
+                background-color: white !important;
+                color: black !important;
+            }
+            .card-box {
+                border: 1px solid #e5e7eb !important;
+                box-shadow: none !important;
+            }
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans min-h-screen flex flex-col antialiased">
+
+    <!-- Header -->
+    <header class="bg-gradient-to-r from-indigo-900 via-indigo-800 to-indigo-950 text-white shadow-lg no-print">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+            <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                <div class="flex items-center space-x-3">
+                    <div class="p-3 bg-indigo-600/50 rounded-xl border border-indigo-400/30 backdrop-blur-sm">
+                        <i class="fa-solid fa-brain text-2xl text-indigo-200"></i>
+                    </div>
+                    <div>
+                    <div class="flex items-center gap-2">
+                        <span class="bg-indigo-500/30 text-indigo-200 text-xs px-2.5 py-0.5 rounded-full border border-indigo-400/30 font-medium">일반고 2학년 교육과정</span>
+                        <span class="bg-emerald-500/30 text-emerald-200 text-xs px-2.5 py-0.5 rounded-full border border-emerald-400/30 font-medium">2026학년도</span>
+                    </div>
+                    <h1 class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight mt-1">
+                        '인공지능 일반' 수강 소감 & 최종 성찰 포트폴리오
+                    </h1>
+                </div>
+            </div>
+            <div class="flex items-center gap-3 flex-wrap">
+                <a href="../index.html" class="flex items-center gap-2 px-4 py-2.5 bg-slate-700/60 hover:bg-slate-600 text-white rounded-lg font-medium transition text-sm shadow-md border border-slate-500/30">
+                    <i class="fa-solid fa-house"></i>
+                    <span>홈으로</span>
+                </a>
+                <button onclick="window.print()" class="flex items-center gap-2 px-4 py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg font-medium transition text-sm shadow-md hover:shadow-indigo-500/20">
+                    <i class="fa-solid fa-print"></i>
+                    <span>PDF/인쇄 출력</span>
+                </button>
+                <button onclick="exportToClipboard()" class="flex items-center gap-2 px-4 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg font-medium transition text-sm shadow-md hover:shadow-emerald-500/20">
+                    <i class="fa-regular fa-copy"></i>
+                    <span>생기부용 텍스트 복사</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</header>
+
+    <!-- Main Container -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-grow w-full">
+
+        <!-- Student Info Bar -->
+        <section class="bg-white rounded-2xl p-6 mb-8 border border-slate-200 shadow-sm no-print">
+            <h2 class="text-sm font-semibold text-slate-400 uppercase tracking-wider mb-4 flex items-center gap-2">
+                <i class="fa-solid fa-id-card text-indigo-500"></i> 학생 및 수강 정보 설정
+            </h2>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-500 mb-1">학교명 및 학년</label>
+                    <input type="text" id="schoolName" value="해강고등학교 2학년" class="w-full bg-slate-50 border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none" oninput="updateReportPreview()">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-500 mb-1">성명</label>
+                    <input type="text" id="studentName" value="한승윤" class="w-full bg-slate-50 border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none" oninput="updateReportPreview()">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-500 mb-1">관심 진로 / 희망 전공</label>
+                    <input type="text" id="targetCareer" value="컴퓨터 공학자" class="w-full bg-slate-50 border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none" oninput="updateReportPreview()">
+                </div>
+            </div>
+        </section>
+
+        <!-- Navigation Tabs -->
+        <div class="flex border-b border-slate-200 mb-8 no-print overflow-x-auto custom-scrollbar">
+            <button onclick="switchTab('chapter-tab')" id="tab-chapter-tab" class="tab-btn active px-6 py-3 font-semibold text-sm border-b-2 border-indigo-600 text-indigo-600 flex items-center gap-2 whitespace-nowrap">
+                <i class="fa-solid fa-laptop-code"></i> 1. 수강 과정 및 주요 탐구 경험
+            </button>
+            <button onclick="switchTab('eval-tab')" id="tab-eval-tab" class="tab-btn px-6 py-3 font-semibold text-sm border-b-2 border-transparent text-slate-500 hover:text-slate-700 flex items-center gap-2 whitespace-nowrap">
+                <i class="fa-solid fa-chart-radar"></i> 2. AI 역량 자가진단
+            </button>
+            <button onclick="switchTab('reflection-tab')" id="tab-reflection-tab" class="tab-btn px-6 py-3 font-semibold text-sm border-b-2 border-transparent text-slate-500 hover:text-slate-700 flex items-center gap-2 whitespace-nowrap">
+                <i class="fa-solid fa-pen-nib"></i> 3. 최종 성찰 보고서 & 생기부 요약
+            </button>
+        </div>
+
+        <!-- TAB 1: Main Reflections & Challenges -->
+        <div id="chapter-tab" class="tab-content space-y-6">
+            <div class="bg-indigo-50 border border-indigo-100 rounded-xl p-4 text-indigo-900 text-sm flex items-start gap-3">
+                <i class="fa-solid fa-circle-info text-indigo-600 text-lg mt-0.5"></i>
+                <div>
+                    <p class="font-bold mb-1">성찰 작성 가이드</p>
+                    <p class="text-indigo-800/80">수강 과정에서 겪었던 시행착오, 인상 깊었던 프로젝트, 그리고 컴퓨터 공학자로서의 다짐을 성찰해 보세요.</p>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 gap-6">
+                <!-- Challenge Box -->
+                <div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm hover:border-indigo-300 transition duration-200">
+                    <div class="flex items-center justify-between mb-3">
+                        <span class="text-xs font-bold text-rose-600 bg-rose-50 px-2.5 py-1 rounded-md border border-rose-100"><i class="fa-solid fa-triangle-exclamation mr-1"></i> 시련과 성장</span>
+                        <i class="fa-solid fa-gears text-slate-400"></i>
+                    </div>
+                    <h3 class="font-bold text-lg text-slate-900 mb-2">1. 수강 초기 어려움과 극복 과정 (도구 활용 및 흥미 형성)</h3>
+                    <p class="text-xs text-slate-500 mb-3">생소했던 다양한 AI 툴 활용부터 적응과 응용을 통한 흥미 탐색의 과정</p>
+                    <textarea id="chap1_text" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-sm focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none h-32 resize-none" oninput="updateReportPreview()">학기 초반에는 생소한 다양한 인공지능 도구와 환경을 접하고, 이를 목적에 맞게 직접 활용하고 제어해야 한다는 점이 상당한 부담과 어려움으로 다가왔습니다. 생각했던 로직대로 동작하지 않거나 툴 사용에 익숙지 않아 많은 시행착오를 겪었지만, 수업이 거듭되면서 점차 도구의 원리를 이해하고 스스로 문제를 해결하기 위해 응용해 가기 시작했습니다. 이 과정에서 복잡했던 기술들이 하나의 유용한 솔루션으로 완성되는 데서 깊은 성취감과 흥미를 느끼게 되었습니다.</textarea>
+                </div>
+
+                <!-- Project Box -->
+                <div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm hover:border-indigo-300 transition duration-200">
+                    <div class="flex items-center justify-between mb-3">
+                        <span class="text-xs font-bold text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded-md border border-emerald-100"><i class="fa-solid fa-utensils mr-1"></i> 핵심 탐구 프로젝트</span>
+                        <i class="fa-solid fa-mobile-screen-button text-slate-400"></i>
+                    </div>
+                    <h3 class="font-bold text-lg text-slate-900 mb-2">2. 가장 인상 깊었던 활동: '학교 급식 조회 앱' 제작</h3>
+                    <p class="text-xs text-slate-500 mb-3">학생들의 실제 필요를 해결하기 위해 데이터 수집 및 앱 구현을 진행한 경험</p>
+                    <textarea id="chap2_text" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-sm focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none h-32 resize-none" oninput="updateReportPreview()">가장 인상 깊었던 경험은 우리 학교 학생들이 매일 필요로 하는 '학교 급식 조회 앱'을 직접 기획하고 제작해 본 프로젝트였습니다. 급식 데이터 수집 및 정제 과정부터 사용자가 한눈에 메뉴를 확인할 수 있는 직관적인 앱 구조를 고민하여 완성했습니다. 단순히 수업 시간에 이론을 배우는 것에 그치지 않고, 소프트웨어 기술을 활용해 주변 사람들의 불편을 해소하고 일상에 편의를 제공하는 실질적인 경험을 하면서 컴퓨팅 사고력과 개발 역량을 크게 키울 수 있었습니다.</textarea>
+                </div>
+
+                <!-- Career Goal Box -->
+                <div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm hover:border-indigo-300 transition duration-200">
+                    <div class="flex items-center justify-between mb-3">
+                        <span class="text-xs font-bold text-indigo-600 bg-indigo-50 px-2.5 py-1 rounded-md border border-indigo-100"><i class="fa-solid fa-bullseye mr-1"></i> 진로 연계 성찰</span>
+                        <i class="fa-solid fa-user-astronaut text-slate-400"></i>
+                    </div>
+                    <h3 class="font-bold text-lg text-slate-900 mb-2">3. 경험을 통한 성찰 및 '컴퓨터 공학자'로서의 향후 다짐</h3>
+                    <p class="text-xs text-slate-500 mb-3">어려움 극복과 프로젝트 경험이 진로에 미친 영향 및 앞으로의 학업 포부</p>
+                    <textarea id="chap3_text" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-sm focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none h-32 resize-none" oninput="updateReportPreview()">초기의 어려움을 극복하고 학교 급식 조회 앱을 성공적으로 구현해 낸 경험은 제 진로 희망인 '컴퓨터 공학자'에 대한 열정과 확신을 더욱 굳건하게 만들었습니다. 컴퓨터 공학이란 단순히 코드를 작성하는 것을 넘어, 최신 기술과 데이터, 인공지능 툴을 융합해 실생활의 문제를 창의적으로 해결하는 학문임을 체감했습니다. 이번 경험을 발판 삼아 앞으로 더 깊이 있는 프로그래밍 알고리즘 및 시스템 구조를 공부하여, 사람들의 삶을 긍정적으로 변화시키는 뛰어난 컴퓨터 공학자로 성장하겠습니다.</textarea>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 2: AI Competency Self Assessment -->
+        <div id="eval-tab" class="tab-content hidden space-y-8">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+                
+                <!-- Sliders Controls -->
+                <div class="lg:col-span-7 bg-white rounded-2xl p-6 border border-slate-200 shadow-sm space-y-6">
+                    <div>
+                        <h3 class="font-bold text-lg text-slate-900 mb-1">AI 리터러시 역량 자가진단</h3>
+                        <p class="text-xs text-slate-500">수강 전 대비 수업을 통해 향상된 5가지 핵심 영역 역량을 점수화해보세요 (1점~5점).</p>
+                    </div>
+
+                    <div class="space-y-5">
+                        <div>
+                            <div class="flex justify-between items-center mb-1 text-sm font-medium">
+                                <span class="text-slate-700"><i class="fa-solid fa-lightbulb text-amber-500 mr-2"></i>1. AI 개념 및 역사 이해도</span>
+                                <span id="score1_val" class="font-bold text-indigo-600">4.5점</span>
+                            </div>
+                            <input type="range" id="score1" min="1" max="5" step="0.5" value="4.5" class="w-full accent-indigo-600" oninput="updateChart()">
+                            <p class="text-xs text-slate-400 mt-1">인공지능의 정의, 발전 역사 및 핵심 알고리즘 구조 파악 능력</p>
+                        </div>
+
+                        <div>
+                            <div class="flex justify-between items-center mb-1 text-sm font-medium">
+                                <span class="text-slate-700"><i class="fa-solid fa-database text-blue-500 mr-2"></i>2. 데이터 분석 및 전처리 능력</span>
+                                <span id="score2_val" class="font-bold text-indigo-600">4.0점</span>
+                            </div>
+                            <input type="range" id="score2" min="1" max="5" step="0.5" value="4.0" class="w-full accent-indigo-600" oninput="updateChart()">
+                            <p class="text-xs text-slate-400 mt-1">학습 데이터의 편향성 감지 및 전처리 절차에 대한 이해</p>
+                        </div>
+
+                        <div>
+                            <div class="flex justify-between items-center mb-1 text-sm font-medium">
+                                <span class="text-slate-700"><i class="fa-solid fa-gears text-emerald-500 mr-2"></i>3. 머신러닝/딥러닝 원리 응용</span>
+                                <span id="score3_val" class="font-bold text-indigo-600">4.2점</span>
+                            </div>
+                            <input type="range" id="score3" min="1" max="5" step="0.5" value="4.2" class="w-full accent-indigo-600" oninput="updateChart()">
+                            <p class="text-xs text-slate-400 mt-1">문제 해결을 위해 알맞은 학습 유형(지도/비지도/강화) 선택 능력</p>
+                        </div>
+
+                        <div>
+                            <div class="flex justify-between items-center mb-1 text-sm font-medium">
+                                <span class="text-slate-700"><i class="fa-solid fa-shield-halved text-rose-500 mr-2"></i>4. AI 윤리 및 책임의식</span>
+                                <span id="score4_val" class="font-bold text-indigo-600">4.8점</span>
+                            </div>
+                            <input type="range" id="score4" min="1" max="5" step="0.5" value="4.8" class="w-full accent-indigo-600" oninput="updateChart()">
+                            <p class="text-xs text-slate-400 mt-1">기술 오남용 방지, 저작권, 설명 가능성에 대한 비판적 사고력</p>
+                        </div>
+
+                        <div>
+                            <div class="flex justify-between items-center mb-1 text-sm font-medium">
+                                <span class="text-slate-700"><i class="fa-solid fa-compass text-purple-500 mr-2"></i>5. 융합적 진로 탐색 의지</span>
+                                <span id="score5_val" class="font-bold text-indigo-600">4.6점</span>
+                            </div>
+                            <input type="range" id="score5" min="1" max="5" step="0.5" value="4.6" class="w-full accent-indigo-600" oninput="updateChart()">
+                            <p class="text-xs text-slate-400 mt-1">자신의 희망 전공 분야와 인공지능 기술을 연계하려는 자세</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Chart Box -->
+                <div class="lg:col-span-5 bg-white rounded-2xl p-6 border border-slate-200 shadow-sm flex flex-col items-center justify-center">
+                    <h4 class="font-bold text-slate-800 mb-4 text-center">나의 AI 역량 방사형 그래프</h4>
+                    <div class="w-full max-w-xs relative aspect-square">
+                        <canvas id="radarChart"></canvas>
+                    </div>
+                    <div id="chartAnalysis" class="mt-6 bg-slate-50 p-4 rounded-xl text-xs text-slate-600 border border-slate-200 w-full">
+                        <!-- Dynamic analysis injected via JS -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 3: Final Synthesis & Portfolio Generator -->
+        <div id="reflection-tab" class="tab-content hidden space-y-8">
+            <!-- Form Input Section (No Print) -->
+            <div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm space-y-6 no-print">
+                <div class="flex items-center justify-between">
+                    <h3 class="font-bold text-lg text-slate-900">최종 성찰문 세부 항목 요약</h3>
+                    <span class="text-xs text-indigo-600 bg-indigo-50 px-3 py-1 rounded-full font-medium">실시간 통합 반영 중</span>
+                </div>
+
+                <div class="space-y-4 text-xs text-slate-600">
+                    <p><i class="fa-solid fa-check text-indigo-500 mr-1.5"></i> 탭 1에서 작성하신 '어려움 극복 과정', '급식 앱 제작 경험', '컴퓨터 공학자 진로 다짐'이 아래 보고서에 자동으로 동기화됩니다.</p>
+                </div>
+            </div>
+
+            <!-- Printable Reflection Portfolio Document Card -->
+            <div class="bg-white rounded-2xl p-8 border border-slate-300 shadow-md card-box text-slate-900 leading-relaxed max-w-4xl mx-auto" id="printableReport">
+                <!-- Document Header -->
+                <div class="text-center border-b-2 border-slate-800 pb-6 mb-8">
+                    <span class="text-xs font-bold text-slate-500 uppercase tracking-widest block mb-1">High School AI Curriculum Portfolio</span>
+                    <h2 class="text-2xl sm:text-3xl font-black text-slate-900">2026학년도 '인공지능 일반' 최종 성찰 보고서</h2>
+                </div>
+
+                <!-- Info Table -->
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 bg-slate-50 p-4 rounded-xl border border-slate-200 mb-8 text-xs">
+                    <div>
+                        <span class="text-slate-400 block font-semibold">학교명 및 학년</span>
+                        <span id="p_school" class="font-bold text-slate-800">해강고등학교 2학년</span>
+                    </div>
+                    <div>
+                        <span class="text-slate-400 block font-semibold">성명</span>
+                        <span id="p_name" class="font-bold text-slate-800">한승윤</span>
+                    </div>
+                    <div>
+                        <span class="text-slate-400 block font-semibold">희망 진로</span>
+                        <span id="p_career" class="font-bold text-slate-800">컴퓨터 공학자</span>
+                    </div>
+                </div>
+
+                <!-- Content Sections -->
+                <div class="space-y-6 text-sm text-slate-800">
+                    <div>
+                        <h3 class="font-bold text-indigo-900 border-l-4 border-indigo-600 pl-3 py-0.5 text-base mb-2">1. 수강 초기 어려움 및 극복 성찰</h3>
+                        <p id="p_chap1" class="bg-slate-50/70 p-4 rounded-xl border border-slate-200 text-xs sm:text-sm leading-relaxed text-slate-700"></p>
+                    </div>
+
+                    <div>
+                        <h3 class="font-bold text-indigo-900 border-l-4 border-indigo-600 pl-3 py-0.5 text-base mb-2">2. 인상 깊었던 주요 활동 (학교 급식 조회 앱 개발)</h3>
+                        <p id="p_chap2" class="bg-slate-50/70 p-4 rounded-xl border border-slate-200 text-xs sm:text-sm leading-relaxed text-slate-700"></p>
+                    </div>
+
+                    <div>
+                        <h3 class="font-bold text-indigo-900 border-l-4 border-indigo-600 pl-3 py-0.5 text-base mb-2">3. 컴퓨터 공학자로서의 성찰 및 향후 학업 다짐</h3>
+                        <p id="p_chap3" class="bg-slate-50/70 p-4 rounded-xl border border-slate-200 text-xs sm:text-sm leading-relaxed text-slate-700"></p>
+                    </div>
+                </div>
+
+                <!-- Footer Sign -->
+                <div class="mt-12 pt-6 border-t border-slate-200 text-right text-xs text-slate-500 flex justify-between items-center">
+                    <span>작성일자: <span id="currentDate">2026. 08. 06</span></span>
+                    <span class="font-medium text-slate-700">위와 같이 '인공지능 일반' 과목 수강 소감 및 성찰을 제출합니다. 제출자: 한승윤</span>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-slate-900 text-slate-400 text-xs py-6 border-t border-slate-800 no-print mt-12">
+        <div class="max-w-7xl mx-auto px-4 text-center space-y-2">
+            <p>고등학교 2학년 '인공지능 일반' 학생 성찰 포트폴리오 시스템</p>
+            <p class="text-slate-600">본 페이지는 학생 개인의 자기주도적 성찰을 돕고 생기부 세부능력 및 특기사항 참고 자료 생성을 위해 제작되었습니다.</p>
+        </div>
+    </footer>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="fixed bottom-6 right-6 bg-slate-900 text-white text-sm px-4 py-3 rounded-xl shadow-xl flex items-center space-x-2 transform translate-y-20 opacity-0 transition duration-300 pointer-events-none z-50">
+        <i class="fa-solid fa-circle-check text-emerald-400"></i>
+        <span id="toastMsg">복사되었습니다!</span>
+    </div>
+
+    <!-- JavaScript Logic -->
+    <script>
+        // Tab Switching Logic
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.querySelectorAll('.tab-btn').forEach(el => {
+                el.classList.remove('active', 'border-indigo-600', 'text-indigo-600');
+                el.classList.add('border-transparent', 'text-slate-500');
+            });
+
+            document.getElementById(tabId).classList.remove('hidden');
+            const btn = document.getElementById('tab-' + tabId);
+            btn.classList.add('active', 'border-indigo-600', 'text-indigo-600');
+            btn.classList.remove('border-transparent', 'text-slate-500');
+
+            if(tabId === 'eval-tab' && radarChart) {
+                setTimeout(() => radarChart.update(), 100);
+            }
+        }
+
+        // Realtime Report Preview Generator
+        function updateReportPreview() {
+            document.getElementById('p_school').innerText = document.getElementById('schoolName').value || '-';
+            document.getElementById('p_name').innerText = document.getElementById('studentName').value || '-';
+            document.getElementById('p_career').innerText = document.getElementById('targetCareer').value || '-';
+
+            document.getElementById('p_chap1').innerText = document.getElementById('chap1_text').value;
+            document.getElementById('p_chap2').innerText = document.getElementById('chap2_text').value;
+            document.getElementById('p_chap3').innerText = document.getElementById('chap3_text').value;
+        }
+
+        // Radar Chart Initialization
+        let radarChart = null;
+
+        function initChart() {
+            const ctx = document.getElementById('radarChart').getContext('2d');
+            
+            radarChart = new Chart(ctx, {
+                type: 'radar',
+                data: {
+                    labels: ['AI 개념/역사', '데이터 전처리', '머신/딥러닝 원리', 'AI 윤리의식', '진로 융합의지'],
+                    datasets: [{
+                        label: '나의 역량 점수',
+                        data: [4.5, 4.0, 4.2, 4.8, 4.6],
+                        backgroundColor: 'rgba(99, 102, 241, 0.25)',
+                        borderColor: '#6366f1',
+                        borderWidth: 2,
+                        pointBackgroundColor: '#4f46e5',
+                        pointBorderColor: '#fff',
+                        pointHoverBackgroundColor: '#fff',
+                        pointHoverBorderColor: '#4f46e5'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    scales: {
+                        r: {
+                            min: 0,
+                            max: 5,
+                            ticks: {
+                                stepSize: 1,
+                                display: false
+                            },
+                            pointLabels: {
+                                font: {
+                                    size: 11,
+                                    family: 'Noto Sans KR'
+                                },
+                                color: '#475569'
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    }
+                }
+            });
+
+            updateChartAnalysis();
+        }
+
+        function updateChart() {
+            const s1 = parseFloat(document.getElementById('score1').value);
+            const s2 = parseFloat(document.getElementById('score2').value);
+            const s3 = parseFloat(document.getElementById('score3').value);
+            const s4 = parseFloat(document.getElementById('score4').value);
+            const s5 = parseFloat(document.getElementById('score5').value);
+
+            document.getElementById('score1_val').innerText = s1 + '점';
+            document.getElementById('score2_val').innerText = s2 + '점';
+            document.getElementById('score3_val').innerText = s3 + '점';
+            document.getElementById('score4_val').innerText = s4 + '점';
+            document.getElementById('score5_val').innerText = s5 + '점';
+
+            if(radarChart) {
+                radarChart.data.datasets[0].data = [s1, s2, s3, s4, s5];
+                radarChart.update();
+            }
+
+            updateChartAnalysis();
+        }
+
+        function updateChartAnalysis() {
+            const scores = [
+                parseFloat(document.getElementById('score1').value),
+                parseFloat(document.getElementById('score2').value),
+                parseFloat(document.getElementById('score3').value),
+                parseFloat(document.getElementById('score4').value),
+                parseFloat(document.getElementById('score5').value)
+            ];
+            const avg = (scores.reduce((a,b) => a+b, 0) / scores.length).toFixed(1);
+
+            let comment = `<strong>평균 역량 점수: ${avg}점 / 5.0점</strong><br>`;
+            if (avg >= 4.5) {
+                comment += "AI 리터러시 전 전반에 걸쳐 뛰어난 이해도와 높은 사회적 책임감을 갖추고 있습니다.";
+            } else if (avg >= 3.8) {
+                comment += "개념과 실습 원리를 고르게 파악하고 있으며, 균형 잡힌 성찰 능력을 보여줍니다.";
+            } else {
+                comment += "기초 원리를 성실히 이수 중이며, 데이터 실습 및 윤리 분야에 대한 지속적인 관심이 기대됩니다.";
+            }
+
+            document.getElementById('chartAnalysis').innerHTML = comment;
+        }
+
+        // Export Function
+        function exportToClipboard() {
+            const name = document.getElementById('studentName').value;
+            const school = document.getElementById('schoolName').value;
+            const career = document.getElementById('targetCareer').value;
+
+            const text = `[인공지능 일반 과목 final 성찰 보고서 - ${school} ${name}]
+희망진로: ${career}
+
+1. 수강 초기 어려움 및 극복 성찰:
+${document.getElementById('chap1_text').value}
+
+2. 인상 깊었던 주요 활동 (학교 급식 조회 앱 개발):
+${document.getElementById('chap2_text').value}
+
+3. 컴퓨터 공학자로서의 성찰 및 향후 다짐:
+${document.getElementById('chap3_text').value}`;
+
+            // Using fallback copy method for iframe compatibility
+            const textArea = document.createElement('textarea');
+            textArea.value = text;
+            document.body.appendChild(textArea);
+            textArea.select();
+            try {
+                document.execCommand('copy');
+                showToast("생기부/포트폴리오용 텍스트가 클립보드에 복사되었습니다!");
+            } catch (err) {
+                showToast("복사에 실패했습니다. 직접 드래그하여 복사해주세요.");
+            }
+            document.body.removeChild(textArea);
+        }
+
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toastMsg').innerText = message;
+            toast.classList.remove('translate-y-20', 'opacity-0');
+            toast.classList.add('translate-y-0', 'opacity-100');
+            setTimeout(() => {
+                toast.classList.remove('translate-y-0', 'opacity-100');
+                toast.classList.add('translate-y-20', 'opacity-0');
+            }, 3000);
+        }
+
+        // Initialize on Load
+        window.onload = function() {
+            const today = new Date();
+            const dateStr = `${today.getFullYear()}. ${String(today.getMonth() + 1).padStart(2, '0')}. ${String(today.getDate()).padStart(2, '0')}`;
+            document.getElementById('currentDate').innerText = dateStr;
+
+            initChart();
+            updateReportPreview();
+        };
+    </script>
+</body>
+</html>
